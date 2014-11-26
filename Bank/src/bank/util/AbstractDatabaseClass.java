@@ -6,6 +6,8 @@ import 	java.sql.SQLException;
 import	java.sql.SQLTimeoutException;
 import	java.sql.ResultSet;
 import	java.sql.Statement;
+import	java.sql.PreparedStatement;
+//import 	com.mysql.jdbc.Driver;
 
 /**
  * This abstract class is a parent for all model classes that will interact with
@@ -41,19 +43,24 @@ public abstract class AbstractDatabaseClass {
 	protected final void connect() {
 		/* Verify the oracle database driver is installed. */
 		try {
-			Class.forName(DRIVER_CLASS);
+			//Class.forName(DRIVER_CLASS);
+			Class.forName(DRIVER_CLASS).newInstance();
 			
 		/* The oracle database driver was not found. */
 		} catch (ClassNotFoundException ex) {
 			System.err.println(ex);
 			System.exit(FAILURE);
+		} catch (IllegalAccessException ex) {
+			System.err.println("Can't do that");
+		} catch (InstantiationException ex) {
+			ex.printStackTrace();
 		}
 		
 		try {
 			connection = DriverManager.getConnection(
-						"jdbc:mysql://localhost/banking?user=root&password=SchoolHouseRock88");
+						"jdbc:mysql://localhost:3306/banking", "bank_db", "dbdb");
 		} catch (SQLException ex) {
-			System.err.println("Unable to connect to the database.");
+			System.out.println("Unable to connect to the database.");
 			ex.printStackTrace();
 		}
 	}
@@ -73,10 +80,39 @@ public abstract class AbstractDatabaseClass {
 		
 		
 		try {
-			connect();
+			System.out.println(connection==null?"null connector":"connector OK");
 			statement = connection.createStatement();
 			results = statement.executeQuery(query);
 			
+		} catch (SQLTimeoutException ex) {
+			System.err.println("Timeout exceeded for this database query.");
+		} catch (SQLException ex) {
+			System.err.println(ex.getMessage());
+			ex.printStackTrace();
+		}
+		
+		return results;
+	}
+	
+	protected PreparedStatement getPreparedStatement(String query) {
+		PreparedStatement statement = null;
+		// DEBUG
+		if (null==query) {System.out.println("no fucking query, dumbass :(");}
+		try {
+			statement = connection.prepareStatement(query);
+		} catch (SQLException ex) {
+			System.out.println("Could not prepare a statement");
+			ex.printStackTrace();
+		}
+		// DEBUG
+		if (null==statement) {System.out.println("statement create failed :(");}
+		return statement;
+	}
+	
+	protected ResultSet executeQuery(PreparedStatement statement) {
+		ResultSet results = null;
+		try {
+			results = statement.executeQuery();
 		} catch (SQLTimeoutException ex) {
 			System.err.println("Timeout exceeded for this database query.");
 		} catch (SQLException ex) {
