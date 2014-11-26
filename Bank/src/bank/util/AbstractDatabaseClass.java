@@ -1,4 +1,4 @@
-package util;
+package bank.util;
 
 import	java.sql.Connection;
 import 	java.sql.DriverManager;
@@ -18,7 +18,7 @@ import	java.sql.Statement;
 //2345678901234567890123456789012345678901234567890123456789012345678901234567890
 public abstract class AbstractDatabaseClass {
 	/** The name of the Java class to obtain a Class object for. */
-	private final String DRIVER_CLASS = "oracle.jdbc.driver.OracleDriver";
+	private final String DRIVER_CLASS = "com.mysql.jdbc.Driver";
 	/** The status code indicating a failure to locate the oracle driver. */
 	public final int FAILURE = -1;
 	/** The connection to use for interactions with the database. */
@@ -51,7 +51,7 @@ public abstract class AbstractDatabaseClass {
 		
 		try {
 			connection = DriverManager.getConnection(
-						"jdbc:oracle:thin:@cci-ora02.uncc.edu:1521:class", "sedog","qwe123");
+						"jdbc:mysql://localhost/banking?user=root&password=SchoolHouseRock88");
 		} catch (SQLException ex) {
 			System.err.println("Unable to connect to the database.");
 			ex.printStackTrace();

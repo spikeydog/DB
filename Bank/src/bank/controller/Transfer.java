@@ -1,4 +1,4 @@
-package bank;
+package bank.controller;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class AccountDetails
+ * Servlet implementation class Transfer
  */
-@WebServlet(name="AccountDetails", urlPatterns="/AccountDetails")
-public class AccountDetails extends HttpServlet {
+@WebServlet(name="Transfer", urlPatterns="/Transfer")
+public class Transfer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AccountDetails() {
+    public Transfer() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -26,7 +26,7 @@ public class AccountDetails extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().println("Account Details called");
+		response.getWriter().println("Transfer called");
 	}
 
 	/**

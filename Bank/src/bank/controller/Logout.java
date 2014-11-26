@@ -1,4 +1,4 @@
-package bank;
+package bank.controller;
 
 import java.io.IOException;
 import javax.servlet.ServletException;

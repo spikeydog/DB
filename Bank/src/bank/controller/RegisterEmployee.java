@@ -1,4 +1,4 @@
-package bank;
+package bank.controller;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class RequestNewAccount
+ * Servlet implementation class RegisterEmployee
  */
-@WebServlet(name="RequestNewAccount", urlPatterns="/RequestNewAccount")
-public class RequestNewAccount extends HttpServlet {
+@WebServlet(name="RegisterEmployee", urlPatterns="/RegisterEmployee")
+public class RegisterEmployee extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public RequestNewAccount() {
+    public RegisterEmployee() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -26,7 +26,7 @@ public class RequestNewAccount extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().println("Request New Account called");
+		response.getWriter().println("Register Employee Servlet called");
 	}
 
 	/**

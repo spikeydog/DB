@@ -93,7 +93,7 @@
 					<label hidden="true">FOO</label>
 				</td>
 				<td>
-					<a href="http://localhost:8080/Banking_App/RegisterCustomer.jsp?">Register a new Credit Dauphine customer account</a>
+					<a href="RegisterCustomer.jsp?">Register a new Credit Dauphine customer account</a>
 				</td>
 			<tr>
 				<td width="150" align="center">OR</td>
@@ -101,7 +101,7 @@
 			<tr>
 				<td width="150" align="center">
 				<td>
-					<a href="http://localhost:8080/Banking_App/RegisterEmployee.jsp?">Register a new Credit Dauphine employee account</a>
+					<a href="RegisterEmployee.jsp?">Register a new Credit Dauphine employee account</a>
 				</td>
 			</tr>
 		</table>
