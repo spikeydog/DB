@@ -44,6 +44,7 @@
 		StringBuilder scribe = new StringBuilder();
 		int accountID1 = 1234567;
 		int accountID2 = 6546854;
+		int i = 0;
 		if (null != session.getAttribute("accounts")) {
 			accounts = (List<Account>) session.getAttribute("accounts");
 		} else {
@@ -56,7 +57,8 @@
 		 	scribe.append("<tr><td>You currently have no accounts</td></tr>");
 		 } else {
 			 for (Account account : accounts) {
-				 scribe.append("<tr><td>" + account.getAccountNumber() + "</td></tr>");
+				 scribe.append("<tr><td><a href=\"AccountDetails?index=").append(i++)
+				 .append("\">").append(account.getAccountNumber()).append("</a></td></tr>");
 			 }
 		 }
 		 out.write(scribe.toString());

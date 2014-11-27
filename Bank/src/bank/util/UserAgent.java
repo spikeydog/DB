@@ -61,6 +61,7 @@ public class UserAgent extends AbstractDatabaseClass {
 				customer.setUserID(results.getInt("user_id"));
 				customer.setUsername(results.getString("username"));
 				customer.setFirstName(results.getString("first_name"));
+				customer.setRole(Role.CUSTOMER);
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -168,6 +169,7 @@ public class UserAgent extends AbstractDatabaseClass {
 				banker.setUserID(results.getInt("user_id"));
 				banker.setUsername(results.getString("username"));
 				banker.setFirstName(results.getString("first_name"));
+				banker.setRole(Role.BANKER);
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();

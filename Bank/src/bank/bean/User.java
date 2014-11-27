@@ -1,23 +1,27 @@
 package bank.bean;
 
+import bank.util.Role;
+
 public class User {
 	private int userID;
 	private String username;
 	private String password;
 	private String firstName;
 	private String lastName;
+	private Role role;
 	
 	public User() {
 		
 	}
 	
 	public User(int userID, String username, String password, String firstName, 
-			String lastName) {
+			String lastName, Role role) {
 		this.userID = userID;
 		this.username = username;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.role = role;
 	}
 	
 	public String getUsername() {
@@ -58,7 +62,16 @@ public class User {
 		StringBuilder scribe = new StringBuilder();
 		scribe.append(super.toString());
 		scribe.append(firstName).append(lastName);
+		scribe.append(role);
 		return scribe.toString();
 	
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 }

@@ -1,5 +1,7 @@
 package bank.bean;
 
+import bank.util.Role;
+
 public class Customer extends User {
 	private String emailAddress;
 	private String ssn;
@@ -17,19 +19,19 @@ public class Customer extends User {
 	
 	public Customer(User user) {
 		super(user.getUserID(), user.getUsername(), user.getPassword(), 
-				user.getFirstName(), user.getLastName());
+				user.getFirstName(), user.getLastName(), user.getRole());
 	}
 
 	public Customer(int userID, String username, String password, String firstName,
 			String lastName) {
-		super(userID, username, password, firstName, lastName);
+		super(userID, username, password, firstName, lastName, Role.CUSTOMER);
 	}
 	
 	public Customer(int userID, String username, String password, String firstName,
 			String lastName, String emailAddress, String ssn, String address1, 
 			String address2, String city, String state, String zipCode, 
 			String telephone, int bankerID, int riskRating) {
-		super(userID, username, password, firstName, lastName);
+		super(userID, username, password, firstName, lastName, Role.CUSTOMER);
 		this.emailAddress = emailAddress;
 		this.ssn = ssn;
 		this.address1 = address1;

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import bank.bean.Account;
+import bank.bean.Transaction;
 import bank.util.AbstractDatabaseClass;
 
 public class AccountAgent extends AbstractDatabaseClass {
@@ -70,6 +71,42 @@ public class AccountAgent extends AbstractDatabaseClass {
 		} finally {
 			super.disconnect();
 		}
+	}
+	
+	public List<Transaction> getTransactions(int accountNumber, Role role) {
+		List<Transaction> trans = new LinkedList<Transaction>();
+		Transaction tx = null;
+		if (Role.CUSTOMER == role) {
+			query = "SELECT * FROM transactions WHERE account_number=?"
+					+ " AND reversed=FALSE";
+		} else if (Role.BANKER == role) {
+			query = "SELECT * FROM transactions WHERE account_number=?";
+		}
+		
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, accountNumber);
+			results = statement.executeQuery();
+			while (results.next()) {
+				tx = new Transaction();
+				tx.setAccountNumber(results.getInt("account_number"));
+				tx.setAmount(results.getDouble("trans_amount"));
+				tx.setDate(results.getDate("trans_date"));
+				tx.setFraud(results.getBoolean("fraud"));
+				tx.setIssuer(results.getString("trans_issuer"));
+				tx.setReversed(results.getBoolean("reversed"));
+				tx.setTransID(results.getInt("trans_id"));
+				trans.add(tx);
+			}
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+		System.out.println(trans.size() + " tx obtained");
+		return trans;
 	}
 
 }

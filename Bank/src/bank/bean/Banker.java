@@ -1,5 +1,7 @@
 package bank.bean;
 
+import bank.util.Role;
+
 public class Banker extends User {
 	private int employeeID;
 	
@@ -9,7 +11,7 @@ public class Banker extends User {
 
 	public Banker(int userID, String username, String password, String firstName,
 			String lastName, String employeeID) {
-		super(userID, username, password, firstName, lastName);
+		super(userID, username, password, firstName, lastName, Role.BANKER);
 		try {
 			this.employeeID = Integer.valueOf(employeeID);
 		} catch (NumberFormatException ex) {
