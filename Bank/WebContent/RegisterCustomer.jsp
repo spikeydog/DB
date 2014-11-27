@@ -46,8 +46,10 @@
 <body>
 <H1>Credit Dauphine</H1>
 <H2>New Customer Registration</H2>
-
-<form name="registrationForm" action="Register" onsubmit="return validate()">
+<br>
+	<%= session.getAttribute("message")%>
+<br>
+<form name="registrationForm" method="post" action="RegisterCustomer" onsubmit="return validate()">
 	<fieldset> <legend>Account Credentials</legend>
 		<table>
 			<tr>

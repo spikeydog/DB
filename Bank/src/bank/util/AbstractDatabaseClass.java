@@ -7,6 +7,8 @@ import	java.sql.SQLTimeoutException;
 import	java.sql.ResultSet;
 import	java.sql.Statement;
 import	java.sql.PreparedStatement;
+
+import java.sql.CallableStatement;
 //import 	com.mysql.jdbc.Driver;
 
 /**
@@ -96,8 +98,7 @@ public abstract class AbstractDatabaseClass {
 	
 	protected PreparedStatement getPreparedStatement(String query) {
 		PreparedStatement statement = null;
-		// DEBUG
-		if (null==query) {System.out.println("no fucking query, dumbass :(");}
+		
 		try {
 			statement = connection.prepareStatement(query);
 		} catch (SQLException ex) {
@@ -106,6 +107,20 @@ public abstract class AbstractDatabaseClass {
 		}
 		// DEBUG
 		if (null==statement) {System.out.println("statement create failed :(");}
+		return statement;
+	}
+	
+	protected CallableStatement getPreparedCall(String query) {
+		CallableStatement statement = null;
+		
+		try {
+			statement = connection.prepareCall(query);
+		} catch (SQLException ex) {
+			System.out.println("Could not prepare a statement");
+			ex.printStackTrace();
+		}
+		// DEBUG
+		if (null==statement) {System.out.println("callable create failed :(");}
 		return statement;
 	}
 	

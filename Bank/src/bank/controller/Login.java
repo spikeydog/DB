@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import	bank.bean.Banker;
+import	bank.bean.Customer;
 import	bank.util.UserAgent;
 /**
  * Servlet implementation class Login
@@ -36,20 +38,25 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		UserAgent agent = new UserAgent();
 		boolean isAuthenticated = false;
+		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String employeeID = request.getParameter("employeeID");
+		
 		employeeID = employeeID.equals("")? null : employeeID;
 		String URL = null;
 		
 		if (null == employeeID) {
-			if (true == agent.AuthenticateCustomer(username, password)) {
+			Customer customer = new Customer(username, password, null, null);
+			
+			if (true == agent.AuthenticateCustomer(customer)) {
 				response.getWriter().println("Customer authenticated!");
 			} else {
 				response.getWriter().println("Customer not authenticated!");
 			}
 		} else {
-			if (agent.AuthenticateEmployee(username, password, employeeID)) {
+			Banker banker = new Banker(username, password, null, null, employeeID);
+			if (agent.AuthenticateBanker(banker)) {
 				response.getWriter().println("Employee authenticated!");
 			} else {
 				response.getWriter().println("Employee not authenticated!");

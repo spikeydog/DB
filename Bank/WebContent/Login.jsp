@@ -36,6 +36,9 @@
 <body>
 <H1>Credit Dauphine</H1>
 <H2>User Login</H2>
+<br>
+${message}
+<br>
 <form id="loginForm" method="post" action="Login" onsubmit="return validate()">
 	Enter your name and password to login <br>
 	<table>
