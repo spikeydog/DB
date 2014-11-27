@@ -11,8 +11,9 @@
 <table style="width:100%">
 	<tr>
 		<td class="login">
-			You are logged in as ${username}
+			You are logged in as ${user.username}
 		</td>
+		
 		<td>
 			<a href="Transfer.jsp">Transfer Funds</a>
 		</td >
@@ -20,11 +21,17 @@
 			<a href="CloseAccount.jsp">Close an Account</a>
 		</td>
 		<td>
-			<a href="ViewProfile.jsp">My Profile</a>
+			<a href="CustomerHome.jsp">Home</a>
+		</td>
+		<td>
+			<a href="ViewProfile">My Profile</a>
 		</td>
 		<td>
 			<a href="Logout">Logout</a>
 		</td>
+	</tr>
+	<tr>
+		${message}
 	</tr>
 </table>
 </body>

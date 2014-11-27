@@ -49,16 +49,16 @@ public class RegisterCustomer extends HttpServlet {
 		String address2 = request.getParameter("address2");
 		String city = request.getParameter("city");
 		String state = request.getParameter("state");
-		int zip = Integer.valueOf(request.getParameter("zip"));
+		String zip = request.getParameter("zip");
 		String phone = request.getParameter("phone");
-		Customer c = new Customer(username, password, firstName, lastName,
+		Customer c = new Customer(0, username, password, firstName, lastName,
 				email, ssn, address1, address2, city, state, zip, phone, 0, 0);
 		UserAgent agent = new UserAgent();
 		Code code = agent.registerCustomer(c);
 		request.getSession().setAttribute("message", code.message);
 		String URL = null;
 		switch (code) {
-		case REG_OK: URL = "Login.jsp"; break;
+		case OK: URL = "Login.jsp"; break;
 		default: URL = "RegisterCustomer.jsp";
 		}
 		

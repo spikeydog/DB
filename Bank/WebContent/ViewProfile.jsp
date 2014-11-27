@@ -31,11 +31,14 @@
 <body>
 
 <header>
+<jsp:include page="CustomerHeader.jsp"/>
 	<H2>Customer Profile</H2>
+	<%= session.getAttribute("customer").toString() %>
 </header>
-<form name="viewForm" action="UpdateProfile" submit="validate()">
+<form name="viewForm" action="UpdateProfile.jsp" submit="validate()">
 	
 	<fieldset><legend>Update Contact Information</legend>
+	
 	<table>
 		<tr>
 				<td>
@@ -105,7 +108,7 @@
 		<td>
 		</td>
 		<td>
-			<input id="cancel" name="cancel" size="size()" value="Cancel" type="reset"/>
+			<input id="udpate" name="update" size="size()" value="Update" type="submit"/>
 		</td>
 	</tr>
 </form>

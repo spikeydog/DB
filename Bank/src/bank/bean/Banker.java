@@ -7,9 +7,9 @@ public class Banker extends User {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Banker(String username, String password, String firstName,
+	public Banker(int userID, String username, String password, String firstName,
 			String lastName, String employeeID) {
-		super(username, password, firstName, lastName);
+		super(userID, username, password, firstName, lastName);
 		try {
 			this.employeeID = Integer.valueOf(employeeID);
 		} catch (NumberFormatException ex) {

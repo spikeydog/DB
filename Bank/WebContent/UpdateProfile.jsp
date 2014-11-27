@@ -29,7 +29,11 @@
 
 </head>
 <body>
-
+<%@ page import="bank.bean.Customer" %>
+<% 
+	Customer c = (Customer) session.getAttribute("customer"); 
+ 	String empty = ""; 
+ 	%>
 <header>
 	<jsp:include page="CustomerHeader.jsp"/>
 	<H2>Update Profile</H2>
@@ -42,7 +46,7 @@
 				<label for="password1">Choose a password</label>
 			</td>
 			<td>
-				<input id="password1" name="password1" required="true" size="size()" maxlength="size()" type="password"/>
+				<input id="password1" name="password1" size="size()" maxlength="size()" type="password"/>
 			</td>
 		</tr>
 		<tr>
@@ -50,7 +54,7 @@
 				<label for="password2">Confirm password</label>
 			</td>
 			<td>
-				<input id="password2" name="password2" required="true" size="size()" maxlength="size()" type="password"/>
+				<input id="password2" name="password2" size="size()" maxlength="size()" type="password"/>
 			</td>
 			<td>
 				<label hidden="true" id="passwordWarn" color="#FF0000">Passwords do not match!</label>
@@ -65,7 +69,7 @@
 					<label for="email">E-mail Address</label>
 				</td>
 				<td>
-					<input id="email" name="email" required="true" size="size()*2" maxlength="size()*2" type="email"/>
+					<input id="email" value="<%= c.getEmailAddress() %>" name="email" size="size()*2" maxlength="size()*2" type="email"/>
 				</td>
 			</tr>
 			<tr>
@@ -73,7 +77,7 @@
 					<label for="phone">Telephone Number</label>
 				</td>
 				<td>
-					<input id="phone" name="phone" required="true" type="tel"/>
+					<input id="phone" value="<%= c.getTelephone() %>"name="phone" type="tel"/>
 				</td>
 			</tr>
 			</table>
@@ -85,7 +89,7 @@
 				<label for="address1">Address Line 1</label>
 			</td>
 			<td>
-				<input id="address1" name="address1" required="true" size="size()*2" maxlength="size()*2" type="text"/>
+				<input id="address1" value="<%= c.getAddress1() %>" name="address1" size="size()*2" maxlength="size()*2" type="text"/>
 			</td>
 		</tr>
 		<tr>
@@ -93,7 +97,7 @@
 				<label for="address2">Address Line 2</label>
 			</td>
 			<td>
-				<input id="address2" name="address2" size="size()*2" maxlength="size()*2" type="text"/>
+				<input id="address2" name="address2" value="<%= c.getAddress2()==null? empty :c.getAddress2()%>" size="size()*2" maxlength="size()*2" type="text"/>
 			</td>
 		</tr>
 		<tr>
@@ -101,7 +105,7 @@
 				<label for="city">City</label>
 			</td>
 			<td>
-				<input id="city" name="city" required="true" size="size()*2" maxlength="size()*2" type="text"/>
+				<input id="city" name="city"  value="<%= c.getCity() %>"size="size()*2" maxlength="size()*2" type="text"/>
 			</td>
 		</tr>
 		<tr>
@@ -109,7 +113,7 @@
 				<label for="state">State Code</label>
 			</td>
 			<td>
-				<input id="state" name="state" required="true" size="2" maxlength="2" type="text"/>
+				<input id="state" name="state"  value="<%= c.getState() %>"size="2" maxlength="2" type="text"/>
 			</td>
 		</tr>
 		<tr>
@@ -117,7 +121,7 @@
 				<label for="zip">Zip Code</label>
 			</td>
 			<td>
-				<input id="zip" name="zip" required="true" size="5" maxlength="5" type="text"/>
+				<input id="zip" name="zip"  value="<%= c.getZipCode() %>"size="5" maxlength="5" type="text"/>
 			</td>
 		</tr>
 		</table>

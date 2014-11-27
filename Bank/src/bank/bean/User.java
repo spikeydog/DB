@@ -1,6 +1,7 @@
 package bank.bean;
 
 public class User {
+	private int userID;
 	private String username;
 	private String password;
 	private String firstName;
@@ -10,8 +11,9 @@ public class User {
 		
 	}
 	
-	public User(String username, String password, String firstName, 
+	public User(int userID, String username, String password, String firstName, 
 			String lastName) {
+		this.userID = userID;
 		this.username = username;
 		this.password = password;
 		this.firstName = firstName;
@@ -41,5 +43,22 @@ public class User {
 	}
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder scribe = new StringBuilder();
+		scribe.append(super.toString());
+		scribe.append(firstName).append(lastName);
+		return scribe.toString();
+	
 	}
 }

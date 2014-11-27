@@ -12,7 +12,11 @@
 </script>
 </head>
 <body>
-<%@ page import="java.util.List, java.util.LinkedList" %>
+<%@ page import="java.sql.Date, 
+				java.util.List, 
+				java.util.LinkedList, 
+				bank.bean.Account, 
+				bank.util.AccountType" %>
 
 <header>
 	<jsp:include page="CustomerHeader.jsp"/>
@@ -36,23 +40,23 @@
 			</td>
 		</tr>
 	<%
-		List<String> accounts;
+		List<Account> accounts;
 		StringBuilder scribe = new StringBuilder();
 		int accountID1 = 1234567;
 		int accountID2 = 6546854;
-		if (null != session.getAttribute("Accounts")) {
-			accounts = (List<String>) session.getAttribute("Accounts");
+		if (null != session.getAttribute("accounts")) {
+			accounts = (List<Account>) session.getAttribute("accounts");
 		} else {
-			accounts = new LinkedList<String>();
-			accounts.add("<tr><td><input type='submit' onclick='foo(this.value)' value='" + accountID1 + "'><td>Checking<td>2,242.09");
-			accounts.add("<tr><td><input type='submit' onclick='foo(this.value)' value='" + accountID2 + "'><td>Savings<td>10,900.00");
+			accounts = new LinkedList<Account>();
+			accounts.add(new Account(1234567890, 123, "checking", 
+					"General checking", 123.00, new Date(System.currentTimeMillis()), false));
 		}
 		
 		 if (0 == accounts.size()) {
 		 	scribe.append("<tr><td>You currently have no accounts</td></tr>");
 		 } else {
-			 for (String account : accounts) {
-				 scribe.append("<tr><td>" + account + "</td></tr>");
+			 for (Account account : accounts) {
+				 scribe.append("<tr><td>" + account.getAccountNumber() + "</td></tr>");
 			 }
 		 }
 		 out.write(scribe.toString());

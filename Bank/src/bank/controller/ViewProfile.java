@@ -1,23 +1,27 @@
 package bank.controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import bank.util.UserAgent;
 
 /**
- * Servlet implementation class Logout
+ * Servlet implementation class ViewProfile
  */
-@WebServlet(name="Logout", urlPatterns="/Logout")
-public class Logout extends HttpServlet {
+@WebServlet("/ViewProfile")
+public class ViewProfile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Logout() {
+    public ViewProfile() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,9 +37,11 @@ public class Logout extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().invalidate();
-		request.getSession().setAttribute("message", "You have been logged out");
-		request.getRequestDispatcher("Login.jsp").forward(request, response);;
+		HttpSession session = request.getSession();
+		UserAgent agent = new UserAgent();
+		agent.getCustomerProfile(session);
+		if (session.getAttribute("customer") == null) {System.out.println("DEBUG");} 
+		request.getRequestDispatcher("ViewProfile.jsp").forward(request, response);
 	}
 
 }

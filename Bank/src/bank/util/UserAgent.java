@@ -1,13 +1,17 @@
 package bank.util;
 
 import bank.util.AbstractDatabaseClass;
+
 import	java.sql.PreparedStatement;
 import	java.sql.ResultSet;
 import	java.sql.SQLException;
 import	java.sql.Types;
 
+import javax.servlet.http.HttpSession;
+
 import	bank.bean.Customer;
 import	bank.bean.Banker;
+import bank.bean.User;
 import	static bank.util.Code.*;
 
 public class UserAgent extends AbstractDatabaseClass {
@@ -15,6 +19,8 @@ public class UserAgent extends AbstractDatabaseClass {
 	private String query = null;
 	/** The PreparedStatement used to query the database. */
 	private PreparedStatement statement = null;
+	/***/
+	private ResultSet results = null;
 	
 	/** No-args constructor */
 	public UserAgent() {
@@ -28,13 +34,11 @@ public class UserAgent extends AbstractDatabaseClass {
 	 * @param	password	The password to authenticate with
 	 * @return	<code>true</code> if the user authenticated successfully
 	 */
-	public boolean AuthenticateCustomer(Customer customer) {
-		// Flag indicating authentication was successful 
-		boolean isAuthenticated = false;
+	public Customer AuthenticateCustomer(Customer customer) {
 		// The result set from the query
-		ResultSet results = null;
+		results = null;
 		
-		this.query = "SELECT username, user_password FROM user WHERE " + 
+		this.query = "SELECT user_id, username, first_name FROM user WHERE " + 
 				"user.username=? AND user.user_password=?";
 				
 		//this.query = "{call auth_customer}";
@@ -51,9 +55,12 @@ public class UserAgent extends AbstractDatabaseClass {
 			statement.setString(1, customer.getUsername());
 			statement.setString(2, customer.getPassword());
 			results = executeQuery(statement);
-			
+			customer = null;
 			if (results.next()) {
-				isAuthenticated = true;
+				customer = new Customer();
+				customer.setUserID(results.getInt("user_id"));
+				customer.setUsername(results.getString("username"));
+				customer.setFirstName(results.getString("first_name"));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -61,7 +68,69 @@ public class UserAgent extends AbstractDatabaseClass {
 			super.disconnect();
 		}
 		
-		return isAuthenticated;
+		return customer;
+	}
+	
+	public void getCustomerProfile(HttpSession session) {
+		query = "SELECT * FROM customers WHERE user_id=?";
+		User user = (User) session.getAttribute("user");
+		Customer customer = new Customer();
+		results = null;
+		
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, user.getUserID());
+			results = statement.executeQuery();
+			if (results.next()) {
+				customer.setEmailAddress(results.getString("email_address"));
+				customer.setAddress1(results.getString("cus_address1"));
+				customer.setAddress2(results.getString("cus_address2"));
+				customer.setCity(results.getString("cus_city"));
+				customer.setState(results.getString("cus_state"));
+				customer.setZipCode(results.getString("cus_zip_code"));
+				customer.setFirstName(user.getFirstName());
+				customer.setLastName(user.getLastName());
+				customer.setTelephone(results.getString("cus_telephone"));
+			}
+		} catch (SQLException ex) {
+			
+		}
+		System.out.println(customer.toString());
+		session.setAttribute("customer", customer);
+	}
+	
+	public Code updateCustomerProfile(Customer customer) {
+		Customer updatedCustomer = customer;
+		query = "UPDATE customers SET(email_address=?,address1=?,address2=?,"
+				+ "cus_city=?, cus_state=?, cus_zip_code=?, cus_telephone=?)";
+		query = "CALL update_customer(?,?,?,?,?,?,?,?,?)";
+		results = null;
+		Code code = null;
+		int i = 1;
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(i++, customer.getUserID());
+			statement.setString(i++, customer.getPassword());
+			statement.setString(i++, customer.getEmailAddress());
+			statement.setString(i++, customer.getAddress1());
+			statement.setString(i++, customer.getAddress2());
+			statement.setString(i++, customer.getCity());
+			statement.setString(i++, customer.getState());
+			statement.setString(i++, customer.getZipCode());
+			statement.setString(i++, customer.getTelephone());
+			results = statement.executeQuery();
+			if (results.next()) {
+				code = Code.getCode(Integer.valueOf(results.getString("code")));
+			}
+		} catch (SQLException ex) {
+			
+		} finally {
+			super.disconnect();
+		}
+		
+		return code;
 	}
 	
 	/** 
@@ -73,13 +142,11 @@ public class UserAgent extends AbstractDatabaseClass {
 	 * @param	employeeID	The employeeID to authenticate under
 	 * @return	<code>true</code> if the user authenticated successfully
 	 */
-	public boolean AuthenticateBanker(Banker banker) {
-		// Flag indicating authentication was successful 
-		boolean isAuthenticated = false;
+	public Banker AuthenticateBanker(Banker banker) {
 		// The result set from the query
 		ResultSet results = null;
 
-		this.query = "SELECT username "
+		this.query = "SELECT user_id, username, first_name "
 				+ "FROM user "
 				+ "INNER JOIN banker USING(user_id) "
 				+ "WHERE username=? "
@@ -94,8 +161,13 @@ public class UserAgent extends AbstractDatabaseClass {
 			statement.setString(2, banker.getPassword());
 			statement.setInt(3, banker.getEmployeeID());
 			results = executeQuery(statement);
+			banker = null;
+			
 			if (results.next()) {
-				isAuthenticated = true;
+				banker = new Banker();
+				banker.setUserID(results.getInt("user_id"));
+				banker.setUsername(results.getString("username"));
+				banker.setFirstName(results.getString("first_name"));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -103,7 +175,7 @@ public class UserAgent extends AbstractDatabaseClass {
 			super.disconnect();
 		}
 		
-		return isAuthenticated;
+		return banker;
 	}
 	
 	/**
@@ -172,10 +244,10 @@ public class UserAgent extends AbstractDatabaseClass {
 			statement.setString(i++, c.getAddress2());
 			statement.setString(i++, c.getCity());
 			statement.setString(i++, c.getState());
-			statement.setInt(i++, c.getZipCode());
+			statement.setString(i++, c.getZipCode());
 			statement.setString(i++, c.getTelephone());
 			
-			results = executeQuery(statement);
+			results = statement.executeQuery();
 			System.out.println(results.toString());
 			if (results.next()) {
 				code = Code.getCode(results.getInt("code"));
