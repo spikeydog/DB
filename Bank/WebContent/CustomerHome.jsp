@@ -61,7 +61,7 @@
 		 }
 		 out.write(scribe.toString());
 	%>
-	<tr><td><a href="">Create a new account</a></td></tr>
+	<tr><td><a href="RequestNewAccount.jsp">Create a new account</a></td></tr>
 	</table>
 	</form>
 </section>

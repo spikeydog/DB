@@ -21,7 +21,7 @@
 			<a href="CloseAccount.jsp">Close an Account</a>
 		</td>
 		<td>
-			<a href="CustomerHome.jsp">Home</a>
+			<a href="CustomerHome">Home</a>
 		</td>
 		<td>
 			<a href="ViewProfile">My Profile</a>

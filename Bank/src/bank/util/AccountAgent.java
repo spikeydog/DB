@@ -10,7 +10,10 @@ import bank.bean.Account;
 import bank.util.AbstractDatabaseClass;
 
 public class AccountAgent extends AbstractDatabaseClass {
-
+	String query = null;
+	PreparedStatement statement = null;
+	ResultSet results = null;
+	
 	public AccountAgent() {
 		super();
 	}
@@ -18,9 +21,7 @@ public class AccountAgent extends AbstractDatabaseClass {
 	public List<Account> getAccounts(int userID) {
 		List<Account> accounts = new LinkedList<Account>();
 		Account account = null;
-		ResultSet results = null;
-		PreparedStatement statement = null;
-		String query = "SELECT * FROM general_accounts WHERE user_id=?";
+		query = "SELECT * FROM general_accounts WHERE user_id=?";
 		
 		super.connect();
 		try {
@@ -45,6 +46,30 @@ public class AccountAgent extends AbstractDatabaseClass {
 		}
 		
 		return accounts;
+	}
+	
+	public void requestAccount(Account account) {
+		query = "INSERT INTO general_accounts "
+				+ "(account_number, user_id, account_type, account_descrip, "
+				+ "balance, date_created, frozen )"
+				+ "VALUES(DEFAULT, ?,?,?,?,?,?)";
+		int i = 1;
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(i++, account.getUserID());
+			statement.setString(i++, account.getType().string);
+			statement.setString(i++, account.getDescription());
+			statement.setDouble(i++, account.getBalance());
+			statement.setDate(i++, account.getDateCreated());
+			statement.setBoolean(i++, account.isFrozen());
+			statement.execute();
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
 	}
 
 }
