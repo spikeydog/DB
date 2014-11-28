@@ -18,13 +18,13 @@
 	Account account = (Account) session.getAttribute("account");
 	List<Transaction> trans = (List<Transaction>) session.getAttribute("trans");
 %>
-<H1>Credit Dauphine</H1>
 <header>
 	<jsp:include page="CustomerHeader.jsp"/>
+	<H2>Account Activity - <%= account==null? "Empty" : account.getAccountNumber() %></H2>
 </header>
 
-<H2>Account Activity - <%= account==null? "Empty" : account.getAccountNumber() %></H2>
 
+<form action="MarkFraud">
 <table width="100%" frame="box">
 		<tr>
 			<td width="20%">
@@ -53,23 +53,27 @@
 		 if (0 == trans.size()) {
 		 	scribe.append("<tr><td>There are no matching transactions</td></tr>");
 		 } else {
+			 int i = 0;
 			 for (Transaction tx : trans) {
 				 scribe.append("<tr>");
 				 scribe.append("<td>").append(tx.getDate()).append("</td>");
 				 scribe.append("<td>").append(tx.getIssuer()).append("</td>");
 				 scribe.append("<td>").append(tx.getAmount()).append("</td>");
-				 scribe.append("<td><input name=\"index\" type=\"checkbox\" disabled=\"");
-				 scribe.append(tx.isFraud()).append("\" checked=\"");
-				 scribe.append(tx.isFraud()).append("\"/></td>");
-				 scribe.append("<td>").append(tx.isReversed()).append("</td>");
+				 scribe.append("<td><input name=\"index\" type=\"checkbox\"");
+				 scribe.append("value=\"").append(i++).append("\"");
+				 scribe.append(tx.isFraud()? "disabled=\"true\"" : "");
+				 scribe.append(tx.isFraud()? "checked=\"true\"" : "");
+				 scribe.append("onclick=\"submit();\"/></td>");
+				 scribe.append("<td>Pending</td>");
 				 scribe.append("</tr>");
 			 }
 		 }
 		 out.write(scribe.toString());
 	%>
 </table>
+</form>
 <H2>Account Actions</H2>
-<form id="actionForm" method="post" action="AccountAction">
+<form id="actionForm" method="post" action="">
 <input name="actionID" id="actionID" type="hidden">
 <%
 	int flag = 0;
@@ -85,6 +89,7 @@
 		out.write("<input id='" + flag + "' type='submit' onclick='setAction(event)' value='" + value + "'/>");
 	}
 %>
+	<input type="button" value="close" onclick="window.location.assign('CloseAccount')"/>
 </form>
 
 <p>This page displays a list of each of the transactions for this account and provides links for each of the actions they can perform.

@@ -108,5 +108,20 @@ public class AccountAgent extends AbstractDatabaseClass {
 		System.out.println(trans.size() + " tx obtained");
 		return trans;
 	}
+	
+	public void setFraudulent(Transaction tx) {
+		query = "UPDATE transactions SET fraud=TRUE WHERE trans_id=?";
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, tx.getTransID());
+			statement.execute();
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+	}
 
 }
