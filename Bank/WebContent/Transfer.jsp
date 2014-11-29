@@ -7,9 +7,17 @@
 <title>Credit Dauphine - Transfer Funds</title>
 </head>
 <body>
-<jsp:include page="CustomerHeader.jsp"/>
+<%@ page import="java.util.List, java.util.LinkedList, bank.bean.Account, 
+	bank.util.AccountType"%>
+<%
+	List<Account> accounts = (List<Account>) session.getAttribute("accounts");
+%>
+<header>
+	<jsp:include page="CustomerHeader.jsp"/>
+	<H2>Transfer Funds</H2>
+</header>
 <section>
-<form name="transferForm" action="Transfer" submit="return validate()">
+<form name="transferForm" method="post" action="Transfer" submit="return validate()">
 	<fieldset><legend>Select Source and Destination Accounts</legend>
 	<table>
 		<tr>
@@ -17,7 +25,18 @@
 				<label for="source">Source Account</label>
 			</td>
 			<td>
-				<input id="source" name="sourceAccount" required="true" size="size()" maxlength="size()" type="text"/>
+				<select id="source" name="source">
+					<%
+						StringBuilder scribe = new StringBuilder();
+			
+						for (Account account : accounts) {
+							int number = account.getAccountNumber();
+							scribe.append("<option value=\"").append(number)
+							.append("\">").append(number).append("</option>");
+						}
+						out.write(scribe.toString());
+					%>
+				</select>
 			</td>
 		</tr>
 		<tr>
@@ -25,7 +44,18 @@
 				<label for="dest">Destination Account</label>
 			</td>
 			<td>
-				<input id="dest" name="dest" required="true" size="size()" maxlength="size()" type="text"/>
+				<select id="target" name="target">
+					<%
+						scribe = new StringBuilder();
+			
+						for (Account account : accounts) {
+							int number = account.getAccountNumber();
+							scribe.append("<option value=\"").append(number)
+							.append("\">").append(number).append("</option>");
+						}
+						out.write(scribe.toString());
+					%>
+				</select>
 			</td>
 		</tr>
 		<tr>
@@ -33,14 +63,24 @@
 				<label for="amount">Amount</label>
 			</td>
 			<td>
-				<input id="amount" name="amount" required="true" size="size()" maxlength="size()" type="text"/>
+				<input 	id="amount" 
+						name="amount" 
+						required="true" 
+						size="size()" 
+						maxlength="size()"
+						type="text"/>
 			</td>
 			<td>
-				<label hidden="true" id="warning" color="#FF0000">Passwords do not match!</label>
+				<label hidden="true" id="warning" color="#FF0000">Ouch!</label>
 			</td>
 		</tr>
+			<td>
+				<input type="submit" value="Transfer Funds"/>
+			</td>
+		<tr>
 		</table>
 	</fieldset>
+</form>
 </section>
 </body>
 </html>

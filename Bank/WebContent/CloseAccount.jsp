@@ -8,27 +8,37 @@
 </head>
 <body>
 <%@ page import="java.util.List, java.util.LinkedList, bank.bean.Account, 
-	bank.util.AccountType"%>
+	bank.bean.Terms, bank.util.AccountType"%>
 <%
-	List<Account> accounts = (List<Account>) session.getAttribute("accounts");
+	Account account = (Account) session.getAttribute("account");
+	Terms terms = (Terms) session.getAttribute("terms");
 %>
 <header>
 	<jsp:include page="CustomerHeader.jsp"/>
-	<H2>Close Account</H2>
+	<H2>Close Account <%= account.getAccountNumber() %></H2>
+	<H3>Are you sure you want to close this account?</H3>
 </header>
+Current balance: <%= account.getBalance() %>
+<br>
+Minimum balance: <%= terms.getMinBalance() %>
+<br>
+Maximum balance: <%= terms.getMaxBalance() %>
+<br>
+Interest rate: <%= terms.getInterestRate() %>
+<br>
+Monthly fee: <%= terms.getFees() %>
+<br>
+Period: <%= terms.getPeriod() %>
+<br>
+
 <form action="CloseAccount" method="post">
-	<select>
-		<%
-			StringBuilder scribe = new StringBuilder();
-			
-			for (Account account : accounts) {
-				int number = account.getAccountNumber();
-				scribe.append("<option value=\"").append(number)
-				.append("\">").append(number).append("</option>");
-			}
-			out.write(scribe.toString());
-		%>
-	</select>
+	<input 	type="submit" 
+			value="Close Account">
+	</input>
+	<input 	type="button" 
+			value="Cancel" 
+			onclick="window.location.assign('AccountDetails.jsp')">
+	</input>;
 </form>
 
 </body>

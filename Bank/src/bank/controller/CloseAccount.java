@@ -1,11 +1,15 @@
 package bank.controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import bank.bean.Account;
+import bank.util.AccountAgent;
 
 /**
  * Servlet implementation class CloseAccount
@@ -25,15 +29,22 @@ public class CloseAccount extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().println("Close account called");
+	protected void doGet(HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	protected void doPost(HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException {
+		AccountAgent agent = new AccountAgent();
+		Account account = (Account) request.getSession().getAttribute("account");
+		int accountNumber = account.getAccountNumber();
+		agent.closeAccount(accountNumber);
+		request.getSession().setAttribute("message", "Account closed");
+		request.getRequestDispatcher("CustomerHome").forward(request, response);
 	}
 
 }

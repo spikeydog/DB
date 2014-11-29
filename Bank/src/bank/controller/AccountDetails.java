@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import bank.bean.Account;
+import bank.bean.Terms;
+import bank.bean.Transaction;
 import bank.bean.User;
 import bank.util.AccountAgent;
+import bank.util.Role;
 
 /**
  * Servlet implementation class AccountDetails
@@ -41,15 +44,19 @@ public class AccountDetails extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
+		AccountAgent agent = new AccountAgent();
 		User user = (User) session.getAttribute("user");
 		int index = Integer.valueOf(request.getParameter("index"));
-		AccountAgent agent = new AccountAgent();
+		Role role = user.getRole();
 		Account account = null;
 		List<Account> accounts = (List<Account>) session.getAttribute("accounts");
 		account = accounts.get(index);
+		int accountNumber = account.getAccountNumber();
+		List<Transaction> trans = agent.getTransactions(accountNumber, role);
+		Terms terms = agent.getTerms(account);
 		session.setAttribute("account", account);
-		if (null == account || null == user) {System.out.println("DEBUG");}
-		session.setAttribute("trans",agent.getTransactions(account.getAccountNumber(), user.getRole()));
+		session.setAttribute("trans", trans);
+		session.setAttribute("terms", terms);
 		request.getRequestDispatcher("AccountDetails.jsp").forward(request, response);
 	}
 

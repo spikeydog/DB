@@ -5,7 +5,9 @@ public enum Code {
 	SQL_ERROR(-1, "A database error occurred"),
 	DUP_USER(11, "Username already in use"),
 	DUP_CUST(12, "Account information already in use"),
-	DUP_EMAIL(21, "Email address already in use");
+	DUP_EMAIL(21, "Email address already in use"),
+	LOW_FUND(31, "Transfer would reduce source account below minimum balance"),
+	OVER_FUND(32, "Transfer would increase target account above maximum balance");
 	
 	
 	public int value;
@@ -24,6 +26,8 @@ public enum Code {
 		case 11 : code = DUP_USER; break;
 		case 12 : code = DUP_CUST; break;
 		case 21 : code = DUP_EMAIL; break;
+		case 31 : code = LOW_FUND; break;
+		case 32 : code = OVER_FUND; break;
 		}
 		return code;
 	}

@@ -13,16 +13,26 @@
 </head>
 <body>
 <%@ page import="java.util.List, java.util.LinkedList, bank.bean.Account, 
-	bank.bean.Transaction, bank.util.AccountType"%>
+	bank.bean.Transaction, bank.bean.Terms, bank.util.AccountType"%>
 <%
 	Account account = (Account) session.getAttribute("account");
+	Terms terms = (Terms) session.getAttribute("terms");
 	List<Transaction> trans = (List<Transaction>) session.getAttribute("trans");
 %>
 <header>
 	<jsp:include page="CustomerHeader.jsp"/>
-	<H2>Account Activity - <%= account==null? "Empty" : account.getAccountNumber() %></H2>
+	<H2>Account Details - <%= account==null? "Empty" : account.getAccountNumber() %></H2>
 </header>
-
+Minimum balnace: <%= terms.getMinBalance() %>
+<br>
+Maximum balance: <%= terms.getMaxBalance() %>
+<br>
+Interest rate: <%= terms.getInterestRate() %>
+<br>
+Monthly fee: <%= terms.getFees() %>
+<br>
+Period: <%= terms.getPeriod() %>
+<br>
 
 <form action="MarkFraud">
 <table width="100%" frame="box">
@@ -89,7 +99,8 @@
 		out.write("<input id='" + flag + "' type='submit' onclick='setAction(event)' value='" + value + "'/>");
 	}
 %>
-	<input type="button" value="close" onclick="window.location.assign('CloseAccount')"/>
+	<br>
+	<input type="button" value="Close Account" onclick="window.location.assign('CloseAccount.jsp')"/>
 </form>
 
 <p>This page displays a list of each of the transactions for this account and provides links for each of the actions they can perform.

@@ -1,11 +1,15 @@
 package bank.controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import bank.util.AccountAgent;
+import bank.util.Code;
 
 /**
  * Servlet implementation class Transfer
@@ -33,7 +37,13 @@ public class Transfer extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		int source = Integer.valueOf(request.getParameter("source"));
+		int target = Integer.valueOf(request.getParameter("target"));
+		double amount = Double.valueOf(request.getParameter("amount"));
+		AccountAgent agent = new AccountAgent();
+		Code code = agent.transfer(source, target, amount);
+		request.getSession().setAttribute("message", code.message);
+		request.getRequestDispatcher("Transfer.jsp").forward(request, response);
 	}
 
 }

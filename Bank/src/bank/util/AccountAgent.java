@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import bank.bean.Account;
+import bank.bean.Terms;
 import bank.bean.Transaction;
 import bank.util.AbstractDatabaseClass;
 
@@ -47,6 +48,33 @@ public class AccountAgent extends AbstractDatabaseClass {
 		}
 		
 		return accounts;
+	}
+	
+	public Terms getTerms(Account account) {
+		Terms terms = null;
+		int accountNumber = account.getAccountNumber();
+		query = "SELECT * FROM terms WHERE account_number=?";
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, accountNumber);
+			results = statement.executeQuery();
+			while (results.next()) {
+				terms = new Terms();
+				terms.setAccountNumber(results.getInt("account_number"));
+				terms.setTermsID(results.getInt("terms_id"));
+				terms.setFees(results.getFloat("fees"));
+				terms.setMinBalance(results.getDouble("min_balance"));
+				terms.setMaxBalance(results.getDouble("max_balance"));
+				terms.setPeriod(results.getDate("period"));
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+		
+		return terms;
 	}
 	
 	public void requestAccount(Account account) {
@@ -123,5 +151,41 @@ public class AccountAgent extends AbstractDatabaseClass {
 			super.disconnect();
 		}
 	}
-
+	
+	public Code transfer(int source, int target, double amount) {
+		Code code = null;
+		query = "CALL transfer(?, ?, ?)";
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, source);
+			statement.setInt(2, target);
+			statement.setDouble(3, amount);
+			results = statement.executeQuery();
+			if (results.next()) {
+				code = Code.getCode(Integer.valueOf(results.getString("message")));
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+		
+		return code;
+	}
+	
+	public void closeAccount(int accountNumber) {
+		query = "CALL close_account(?)";
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, accountNumber);
+			statement.executeQuery();
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+	}
 }
