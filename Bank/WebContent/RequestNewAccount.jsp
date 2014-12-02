@@ -17,16 +17,20 @@
 		<table>
 			<tr>
 				<td>
-					<label for="type">Type</label>
+					<label for="type">Type: </label>
 				</td>
-					
 				<td>
-					<input id="type" name="type" type="text"/>
+					<select name=type>
+						<option value="checking">checking</option>
+						<option value="savings">savings</option>
+						<option value="credit">credit</option>
+						<option value="loan">loan</option>
+					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<label for="description">Description</label>
+					<label for="description">Description:</label>
 				</td>
 					
 				<td>
@@ -35,7 +39,7 @@
 			</tr>
 			<tr>
 				<td>
-					<label for="balance">Initial Balance</label>
+					<label for="balance">Amount to Deposit:</label>
 				</td>
 					
 				<td>

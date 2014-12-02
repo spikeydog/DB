@@ -12,7 +12,7 @@
 </script>
 </head>
 <body>
-<%@ page import="java.sql.Date, 
+<%@ page import="java.sql.Timestamp, 
 				java.util.List, 
 				java.util.LinkedList, 
 				bank.bean.Account, 
@@ -20,6 +20,7 @@
 
 <header>
 	<jsp:include page="CustomerHeader.jsp"/>
+	<% List<Account> accounts = (List<Account>) session.getAttribute("accounts"); %>
 </header>
 <br>
 <H2>Customer Home</H2>
@@ -40,24 +41,16 @@
 			</td>
 		</tr>
 	<%
-		List<Account> accounts;
 		StringBuilder scribe = new StringBuilder();
-		int accountID1 = 1234567;
-		int accountID2 = 6546854;
 		int i = 0;
-		if (null != session.getAttribute("accounts")) {
-			accounts = (List<Account>) session.getAttribute("accounts");
-		} else {
+		if (null == accounts) {
 			accounts = new LinkedList<Account>();
-			accounts.add(new Account(1234567890, 123, "checking", 
-					"General checking", 123.00, new Date(System.currentTimeMillis()), false));
 		}
-		
-		 if (0 == accounts.size()) {
+		if (0 == accounts.size()) {
 		 	scribe.append("<tr><td>You currently have no accounts</td></tr>");
 		 } else {
 			 for (Account account : accounts) {
-				 scribe.append("<tr><td><a href=\"AccountDetails?index=").append(i++)
+				 scribe.append("<tr><td><a method=\"post\" href=\"AccountDetails?index=").append(i++)
 				 .append("\">").append(account.getAccountNumber()).append("</a></td></tr>");
 			 }
 		 }
@@ -68,7 +61,4 @@
 	</form>
 </section>
 </body>
-<p>This page will contain a list of user accounts with a summary of information for each one: account number, type, and balance.
-<p>Each account contains a link that goes to the details page for that account
-<p>links a customer to the account creation page
 </html>

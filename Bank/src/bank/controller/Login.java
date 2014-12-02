@@ -12,7 +12,9 @@ import javax.servlet.http.HttpSession;
 
 import	bank.bean.Banker;
 import	bank.bean.Customer;
+import bank.bean.User;
 import bank.util.AccountAgent;
+import bank.util.Role;
 import	bank.util.UserAgent;
 /**
  * Servlet implementation class Login
@@ -67,13 +69,15 @@ public class Login extends HttpServlet {
 				session.setAttribute("message", "Login unsuccessful");
 			}
 		} else {
-			Banker banker = new Banker(0, username, password, null, null, employeeID);
+			User user = new User(0, username, password, null, null, Role.BANKER);
+			Banker banker = new Banker(user, employeeID);
 			banker = agent.AuthenticateBanker(banker);
 			if (null != banker) {
+				URL = "BankerHome";
 				request.getSession().setAttribute("user", banker);
-				response.getWriter().println("Employee authenticated!");
 			} else {
-				response.getWriter().println("Employee not authenticated!");
+				URL = "Login.jsp";
+				session.setAttribute("message", "Login unsuccessful");
 			}
 		}
 		

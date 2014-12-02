@@ -1,30 +1,35 @@
 package bank.controller;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import bank.bean.Account;
 import bank.bean.Banker;
+import bank.bean.OwnedAccount;
+import bank.bean.Transaction;
 import bank.bean.User;
-import bank.util.Code;
+import bank.util.AccountAgent;
 import bank.util.Role;
-import bank.util.UserAgent;
 
 /**
- * Servlet implementation class RegisterEmployee
+ * Servlet implementation class BankerHome
  */
-@WebServlet(name="RegisterEmployee", urlPatterns="/RegisterEmployee")
-public class RegisterEmployee extends HttpServlet {
+@WebServlet(name="BankerHome", urlPatterns="/BankerHome")
+public class BankerHome extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public RegisterEmployee() {
+    public BankerHome() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -40,30 +45,24 @@ public class RegisterEmployee extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		UserAgent agent = new UserAgent();
-		User user = null;
-		Banker banker = null;
-		Code code = null;
+		AccountAgent agent = new AccountAgent();
+		HttpSession session = request.getSession();
+		Banker banker = (Banker) session.getAttribute("user");
 		String URL = null;
 		
-		String username = request.getParameter("username");
-		String password = request.getParameter("password1");
-		String firstName = request.getParameter("firstName");
-		String lastName = request.getParameter("lastName");
-		String employeeID = request.getParameter("employeeID");
-		user = new User(0, username, password, firstName, lastName, Role.BANKER);
-		banker = new Banker(user, employeeID);
-		code = agent.registerEmployee(banker);
-		
-		if (Code.OK == code) {
-			URL = "Login.jsp";
-			request.getSession().setAttribute("user", banker);
+		if (null != banker && Role.BANKER == banker.getRole()) {
+			System.out.println("Banker: " + banker.getUserID());
+			List<OwnedAccount> accounts = agent.getFrozenAccounts(banker);
+			List<Transaction> trans = agent.getFraudulentTransactions(banker);
+			session.removeAttribute("accounts");
+			session.removeAttribute("trans");
+			session.setAttribute("accounts", accounts);
+			session.setAttribute("trans", trans);
+			URL = "BankerHome.jsp";
 		} else {
-			URL = "RegisterEmployee.jsp";
+			URL = "Logout";
 		}
 		
-		request.getSession().setAttribute("message", code.message);
 		request.getRequestDispatcher(URL).forward(request, response);
 	}
-
 }

@@ -23,15 +23,15 @@
 	<jsp:include page="CustomerHeader.jsp"/>
 	<H2>Account Details - <%= account==null? "Empty" : account.getAccountNumber() %></H2>
 </header>
-Minimum balnace: <%= terms.getMinBalance() %>
+Minimum balance: <%= terms!=null? terms.getMinBalance() : "Pending approval" %>
 <br>
-Maximum balance: <%= terms.getMaxBalance() %>
+Maximum balance: <%= terms!=null? terms.getMaxBalance() : "Pending approval" %>
 <br>
-Interest rate: <%= terms.getInterestRate() %>
+Interest rate: <%= terms!=null? terms.getInterestRate() : "Pending approval" %>
 <br>
-Monthly fee: <%= terms.getFees() %>
+Monthly fee: <%= terms!=null? terms.getFees() : "Pending approval" %>
 <br>
-Period: <%= terms.getPeriod() %>
+Period: <%= terms!=null? terms.getPeriod() : "Pending approval" %>
 <br>
 
 <form action="MarkFraud">
@@ -74,7 +74,7 @@ Period: <%= terms.getPeriod() %>
 				 scribe.append(tx.isFraud()? "disabled=\"true\"" : "");
 				 scribe.append(tx.isFraud()? "checked=\"true\"" : "");
 				 scribe.append("onclick=\"submit();\"/></td>");
-				 scribe.append("<td>Pending</td>");
+				 scribe.append((tx.isFraud() && !tx.isReversed())? "<td>Pending</td>" : "");
 				 scribe.append("</tr>");
 			 }
 		 }
@@ -102,7 +102,5 @@ Period: <%= terms.getPeriod() %>
 	<br>
 	<input type="button" value="Close Account" onclick="window.location.assign('CloseAccount.jsp')"/>
 </form>
-
-<p>This page displays a list of each of the transactions for this account and provides links for each of the actions they can perform.
 </body>
 </html>

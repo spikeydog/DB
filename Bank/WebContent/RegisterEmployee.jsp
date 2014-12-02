@@ -30,7 +30,7 @@
 <body>
 <H1>Credit Dauphine</H1>
 <H2>New Employee Registration</H2>
-<form name="registrationForm" action="Register" onsubmit="return validate()">
+<form method="post" name="registrationForm" action="RegisterEmployee" onsubmit="return validate()">
 	
 		<fieldset width="150">
 		<legend>User Account Credentials</legend>
@@ -74,14 +74,6 @@
 			</td>
 			<td>
 				<input id="firstName" name="firstName" required="true" size="size()" maxlength="size()" type="text"/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for="middleName">Middle Name</label>
-			</td>
-			<td>
-				<input id="middleName" name="middleName" size="size()*2" maxlength="size()*2" type="text"/>
 			</td>
 		</tr>
 		<tr>

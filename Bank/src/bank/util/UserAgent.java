@@ -38,10 +38,8 @@ public class UserAgent extends AbstractDatabaseClass {
 		// The result set from the query
 		results = null;
 		
-		this.query = "SELECT user_id, username, first_name FROM user WHERE " + 
-				"user.username=? AND user.user_password=?";
+		this.query = "CALL auth_customer(?,?)";
 				
-		//this.query = "{call auth_customer}";
 		super.connect();
 		//results = super.executeQuery(query);
 		// Attempt to get data from the results set
@@ -56,7 +54,7 @@ public class UserAgent extends AbstractDatabaseClass {
 			statement.setString(2, customer.getPassword());
 			results = executeQuery(statement);
 			customer = null;
-			if (results.next()) {
+			if (null!= results && results.next()) {
 				customer = new Customer();
 				customer.setUserID(results.getInt("user_id"));
 				customer.setUsername(results.getString("username"));
@@ -93,6 +91,43 @@ public class UserAgent extends AbstractDatabaseClass {
 				customer.setFirstName(user.getFirstName());
 				customer.setLastName(user.getLastName());
 				customer.setTelephone(results.getString("cus_telephone"));
+			}
+		} catch (SQLException ex) {
+			
+		}
+		System.out.println(customer.toString());
+		session.setAttribute("customer", customer);
+	}
+	
+	public void getCustomer(int customerID, HttpSession session) {
+		query = "SELECT email_address, cus_address1, cus_address2, cus_city,"
+				+ "cus_state, cus_zip_code, cus_telephone, cus_risk, first_name,"
+				+ "last_name, user.user_id, ssn "
+				+ "FROM customers JOIN user USING(user_id)"
+				+ "WHERE user_id=? AND banker_user_id=?";
+		Banker banker = (Banker) session.getAttribute("user");
+		Customer customer = new Customer();
+		results = null;
+		
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, customerID);
+			statement.setInt(2, banker.getUserID());
+			results = statement.executeQuery();
+			if (results.next()) {
+				customer.setEmailAddress(results.getString("email_address"));
+				customer.setAddress1(results.getString("cus_address1"));
+				customer.setAddress2(results.getString("cus_address2"));
+				customer.setCity(results.getString("cus_city"));
+				customer.setState(results.getString("cus_state"));
+				customer.setZipCode(results.getString("cus_zip_code"));
+				customer.setFirstName(results.getString("first_name"));
+				customer.setLastName(results.getString("last_name"));
+				customer.setTelephone(results.getString("cus_telephone"));
+				customer.setRiskRating(results.getInt("cus_risk"));
+				customer.setUserID(results.getInt("user_id"));
+				customer.setSsn(results.getString("ssn"));
 			}
 		} catch (SQLException ex) {
 			
@@ -180,53 +215,9 @@ public class UserAgent extends AbstractDatabaseClass {
 		return banker;
 	}
 	
-	/**
-	 * This method returns true if the username exists.
-	 * 
-	 * @param username	the username to check
-	 * @return	true if the username exists
-	 */
-	public boolean userExists(String username) {
-		if (null == username || "".equals(username)) {
-			throw new RuntimeException("username is empty");
-		}
-		
-		// Flag indicating authentication was successful 
-		boolean userExists = false;
-		// The result set from the query
-		ResultSet results = null;
-
-		this.query = 
-				"SELECT user.username"
-				+ "FROM user "
-				+ "WHERE user.username=?";
-		super.connect();
-
-		// Attempt to get data from the results set
-		try {
-			statement = getPreparedStatement(query);
-			statement.setString(1, username);
-			results = executeQuery(statement);
-			if (results.next()) {
-				userExists = true;
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			super.disconnect();
-		}
-		
-		return userExists;
-	}
-	/*
-	private boolean registerUser() {
-		
-	}
-	*/
 	public Code registerCustomer(Customer c) {
 		// Flag indicating authentication was successful 
 		Code code = null;
-		boolean isRegistered = false;
 		// The result set from the query
 		ResultSet results = null;
 		int i = 1;
@@ -248,6 +239,38 @@ public class UserAgent extends AbstractDatabaseClass {
 			statement.setString(i++, c.getState());
 			statement.setString(i++, c.getZipCode());
 			statement.setString(i++, c.getTelephone());
+			
+			results = statement.executeQuery();
+			System.out.println(results.toString());
+			if (results.next()) {
+				code = Code.getCode(results.getInt("code"));
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+		
+		return code;
+	}
+	
+	public Code registerEmployee(Banker b) {
+		// Flag indicating authentication was successful 
+		Code code = null;
+		// The result set from the query
+		ResultSet results = null;
+		int i = 1;
+		this.query = "CALL register_banker(?,?,?,?,?)";
+		super.connect();
+
+		// Attempt to get data from the results set
+		try {
+			statement = getPreparedStatement(query);
+			statement.setString(i++, b.getUsername());
+			statement.setString(i++, b.getPassword());
+			statement.setString(i++, b.getFirstName());
+			statement.setString(i++, b.getLastName());
+			statement.setInt(i++, b.getEmployeeID());
 			
 			results = statement.executeQuery();
 			System.out.println(results.toString());

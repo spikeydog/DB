@@ -1,6 +1,6 @@
 package bank.bean;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.io.Serializable;
 
 import bank.util.AccountType;
@@ -11,7 +11,7 @@ public class Account implements Serializable {
 	private AccountType type;
 	private String description;
 	private double balance;
-	private Date dateCreated;
+	private Timestamp dateCreated;
 	private boolean isFrozen;
 	private static final long serialVersionUID = 1L;
 	
@@ -20,7 +20,7 @@ public class Account implements Serializable {
 	}
 	
 	public Account(int accountNumber, int userID, String type, String descr,
-			double balance, Date dateCreated, boolean isFrozen) {
+			double balance, Timestamp dateCreated, boolean isFrozen) {
 		this.accountNumber = accountNumber;
 		this.userID = userID;
 		this.type = AccountType.getType(type);
@@ -70,11 +70,11 @@ public class Account implements Serializable {
 		this.balance = balance;
 	}
 
-	public Date getDateCreated() {
+	public Timestamp getDateCreated() {
 		return dateCreated;
 	}
 
-	public void setDateCreated(Date dateCreated) {
+	public void setDateCreated(Timestamp dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 

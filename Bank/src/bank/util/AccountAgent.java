@@ -6,9 +6,15 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.sun.xml.internal.ws.org.objectweb.asm.Type;
+
 import bank.bean.Account;
+import bank.bean.Banker;
+import bank.bean.Customer;
+import bank.bean.OwnedAccount;
 import bank.bean.Terms;
 import bank.bean.Transaction;
+import bank.bean.User;
 import bank.util.AbstractDatabaseClass;
 
 public class AccountAgent extends AbstractDatabaseClass {
@@ -37,7 +43,7 @@ public class AccountAgent extends AbstractDatabaseClass {
 				account.setType(AccountType.getType(results.getString("account_type")));
 				account.setDescription(results.getString("account_descrip"));
 				account.setBalance(results.getDouble("balance"));
-				account.setDateCreated(results.getDate("date_created"));
+				account.setDateCreated(results.getTimestamp("date_created"));
 				account.setFrozen(results.getBoolean("frozen"));
 				accounts.add(account);
 			}
@@ -90,7 +96,7 @@ public class AccountAgent extends AbstractDatabaseClass {
 			statement.setString(i++, account.getType().string);
 			statement.setString(i++, account.getDescription());
 			statement.setDouble(i++, account.getBalance());
-			statement.setDate(i++, account.getDateCreated());
+			statement.setTimestamp(i++, account.getDateCreated());
 			statement.setBoolean(i++, account.isFrozen());
 			statement.execute();
 			
@@ -120,7 +126,7 @@ public class AccountAgent extends AbstractDatabaseClass {
 				tx = new Transaction();
 				tx.setAccountNumber(results.getInt("account_number"));
 				tx.setAmount(results.getDouble("trans_amount"));
-				tx.setDate(results.getDate("trans_date"));
+				tx.setDate(results.getTimestamp("trans_date"));
 				tx.setFraud(results.getBoolean("fraud"));
 				tx.setIssuer(results.getString("trans_issuer"));
 				tx.setReversed(results.getBoolean("reversed"));
@@ -187,5 +193,105 @@ public class AccountAgent extends AbstractDatabaseClass {
 		} finally {
 			super.disconnect();
 		}
+	}
+	
+	public List<OwnedAccount> getFrozenAccounts(Banker banker) {
+		List<OwnedAccount> accounts = new LinkedList<OwnedAccount>();
+		OwnedAccount account = null;
+		User user = null;
+		query = "CALL get_new_accounts(?)";
+		
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, banker.getUserID());
+			results = statement.executeQuery();
+			if (null != results) {
+				while (results.next()) {
+					account = new OwnedAccount();
+					user = new User();
+					account.setUserID(results.getInt("user_id"));
+					user.setUserID(results.getInt("user_id"));
+					user.setFirstName(results.getString("first_name"));
+					user.setLastName(results.getString("last_name"));
+					account.setUser(user);
+					account.setAccountNumber(results.getInt("account_number"));
+					account.setBalance(results.getDouble("balance"));
+					account.setDateCreated(results.getTimestamp("date_created"));
+					account.setType(AccountType.getType(results.getString("account_type")));
+					accounts.add(account);
+				}
+			}
+			System.out.println("Size of accounts list: " + accounts.size());
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+		
+		return accounts;
+	}
+	
+	public List<Transaction> getFraudulentTransactions(Banker banker) {
+		List<Transaction> trans = new LinkedList<Transaction>();
+		Transaction tx = null;
+		query = "SELECT * "
+				+ "	FROM transactions "
+				+ "	JOIN general_accounts USING(account_number)"
+				+ "	JOIN customers USING(user_id)"
+				+ "	WHERE fraud=TRUE "
+				+ "		AND reversed=FALSE"
+				+ "		AND customers.banker_user_id=?";
+		
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, banker.getUserID());
+			results = statement.executeQuery();
+			
+			if (null != results) {
+				while (results.next()) {
+					tx = new Transaction();
+					tx.setTransID(results.getInt("trans_id"));
+					tx.setAccountNumber(results.getInt("account_number"));
+					tx.setDate(results.getTimestamp("trans_date"));
+					tx.setIssuer(results.getString("trans_issuer"));
+					tx.setAmount(results.getDouble("trans_amount"));
+					trans.add(tx);
+				}
+			}
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+		
+		return trans;
+	}
+	
+	public int getCustomerIdByAccountID(int accountID) {
+		int customerID = 0;
+		query = "SELECT user_id FROM general_accounts WHERE account_number=?";
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, accountID);
+			results = statement.executeQuery();
+			
+			if (null != results) {
+				while (results.next()) {
+					customerID = results.getInt("user_id");
+				}
+			}
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+		
+		return customerID;
 	}
 }

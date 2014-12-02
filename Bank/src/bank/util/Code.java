@@ -7,8 +7,9 @@ public enum Code {
 	DUP_CUST(12, "Account information already in use"),
 	DUP_EMAIL(21, "Email address already in use"),
 	LOW_FUND(31, "Transfer would reduce source account below minimum balance"),
-	OVER_FUND(32, "Transfer would increase target account above maximum balance");
-	
+	OVER_FUND(32, "Transfer would increase target account above maximum balance"),
+	DUP_BANK(42, "You appear to have already registered!"),
+	NOT_BANK(43, "Please verify your Employee ID and try again.");
 	
 	public int value;
 	public String message;

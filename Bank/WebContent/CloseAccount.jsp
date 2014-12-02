@@ -30,7 +30,8 @@ Monthly fee: <%= terms.getFees() %>
 <br>
 Period: <%= terms.getPeriod() %>
 <br>
-
+<br>
+<br>
 <form action="CloseAccount" method="post">
 	<input 	type="submit" 
 			value="Close Account">

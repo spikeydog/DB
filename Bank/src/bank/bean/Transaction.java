@@ -2,11 +2,12 @@ package bank.bean;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Transaction implements Serializable {
 	private int accountNumber;
 	private int transID;
-	private Date date;
+	private Timestamp date;
 	private String issuer;
 	private Double amount;
 	private boolean isFraud;
@@ -33,11 +34,11 @@ public class Transaction implements Serializable {
 		this.transID = transID;
 	}
 
-	public Date getDate() {
+	public Timestamp getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 

@@ -2,6 +2,7 @@ package bank.controller;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -56,7 +57,7 @@ public class RequestNewAccount extends HttpServlet {
 			account.setType(AccountType.getType(request.getParameter("type")));
 			account.setDescription(request.getParameter("description"));
 			account.setFrozen(true);
-			account.setDateCreated(new Date(System.currentTimeMillis()));
+			account.setDateCreated(new Timestamp(System.currentTimeMillis()));
 			account.setBalance(Double.valueOf(request.getParameter("balance")));
 			/*
 			Terms terms = new Terms();
