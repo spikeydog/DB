@@ -15,7 +15,11 @@ import bank.bean.User;
 import bank.util.AccountAgent;
 
 /**
+ * This controller handles requests to mark a transaction as fraudulent.
+ * 
  * Servlet implementation class MarkFraud
+ * 
+ * @author Spikeydog
  */
 @WebServlet(name="MarkFraud", urlPatterns="/MarkFraud")
 public class MarkFraud extends HttpServlet {
@@ -45,9 +49,13 @@ public class MarkFraud extends HttpServlet {
 		int index = Integer.valueOf(request.getParameter("index"));
 		HttpSession session = request.getSession();
 		AccountAgent agent = new AccountAgent();
+		
+		@SuppressWarnings("unchecked")
 		List<Transaction> trans = (List<Transaction>) session.getAttribute("trans");
 		User user = (User) session.getAttribute("user");
 		Transaction tx = trans.get(index);
+		
+		/* Make sure the transaction and user both exist */
 		if (null != tx && null != user) {
 			agent.setFraudulent(tx);
 			session.setAttribute("trans", 

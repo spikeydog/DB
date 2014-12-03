@@ -1,5 +1,11 @@
 package bank.util;
 
+/**
+ * Enumerated class for the account types that can be managed.
+ * 
+ * @author Spikeydog
+ *
+ */
 public enum AccountType {
 	CHECKING("checking"),
 	SAVINGS("savings"),

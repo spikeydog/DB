@@ -14,6 +14,8 @@ import bank.bean.Customer;
 import bank.util.AccountAgent;
 
 /**
+ * This controller processes requests to freeze or unfreeze an account.
+ * 
  * Servlet implementation class FreezeAccount
  */
 @WebServlet("/FreezeAccount")
@@ -40,15 +42,15 @@ public class FreezeAccount extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		int accountID = Integer.valueOf(request.getParameter("accountID"));
+		int accountID = Integer.valueOf(request.getParameter("freezerID"));
+		boolean freeze = Boolean.valueOf(request.getParameter("freezerFlag"));
 		Customer c = (Customer) session.getAttribute("customer");
 		
-		int customerID = c.getUserID();
-		
 		AccountAgent agent = new AccountAgent();
-		agent.freezeAccount(accountID);
-		String URL = "CustomerAccountDetails?customer=" + customerID 
-				+ "&accountID=" + accountID;
+		agent.freezeAccount(accountID, freeze);
+		
+		/* Forward */
+		String URL = "CustomerByAccount?accountID=" + accountID;
 		request.getRequestDispatcher(URL).forward(request, response);
 	}
 

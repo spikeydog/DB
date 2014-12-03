@@ -16,7 +16,11 @@ import bank.util.AccountAgent;
 import	java.sql.Date;
 
 /**
+ * This controller handles requests to set the terms on an account.
+ * 
  * Servlet implementation class SetTerms
+ * 
+ * @author Spikeydog
  */
 @WebServlet("/SetTerms")
 public class SetTerms extends HttpServlet {
@@ -51,6 +55,8 @@ public class SetTerms extends HttpServlet {
 		String rateStr = request.getParameter("rate");
 		String periodStr = request.getParameter("period");
 		String feesStr = request.getParameter("fees");
+		
+		/* Need to have defaults for new accounts without preexisting terms */
 		double min = null == minStr? 0 : Double.valueOf(minStr);
 		double max = null == maxStr? 0 : Double.valueOf(maxStr);
 		float rate = null == minStr? 0 : Float.valueOf(rateStr);
@@ -58,6 +64,7 @@ public class SetTerms extends HttpServlet {
 		float fees = null == feesStr? 0 : Float.valueOf(feesStr);
 		Account account = agent.getAccount(accountID);
 		
+		/* Populate the bean */
 		terms.setAccountNumber(accountID);
 		terms.setMinBalance(min);
 		terms.setMaxBalance(max);
@@ -66,7 +73,8 @@ public class SetTerms extends HttpServlet {
 		terms.setFees(fees);
 		agent.setTerms(terms);
 		terms = agent.getTerms(account);
-		if (null==terms) {System.out.println("terms null :(");}
+		
+		/* Populate the session with terms bean */
 		request.getSession().setAttribute("terms", agent.getTerms(account));
 		
 		String URL = "SetTerms.jsp?accountID=" + accountID;

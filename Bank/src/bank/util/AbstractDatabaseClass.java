@@ -14,10 +14,13 @@ import java.sql.CallableStatement;
 /**
  * This abstract class is a parent for all model classes that will interact with
  * the database. It has methods for establishing and closing a connection to the
- * database.
+ * database. 
+ * 
+ * Modified from an older class designed for Oracle DB. 
  * 
  * @author	Spike E. Dog
- * @version	2013.10.15
+ * @version 2014.11.30  MySQL
+ * @version	2013.10.15  Oracle DB
  */
 //2345678901234567890123456789012345678901234567890123456789012345678901234567890
 public abstract class AbstractDatabaseClass {

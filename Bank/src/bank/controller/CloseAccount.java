@@ -12,7 +12,11 @@ import bank.bean.Account;
 import bank.util.AccountAgent;
 
 /**
+ * This controller processes requests to close an account.
+ * 
  * Servlet implementation class CloseAccount
+ * 
+ * @author Spikeydog
  */
 @WebServlet(name="CloseAccount", urlPatterns="/CloseAccount")
 public class CloseAccount extends HttpServlet {
@@ -43,6 +47,7 @@ public class CloseAccount extends HttpServlet {
 		Account account = (Account) request.getSession().getAttribute("account");
 		int accountNumber = account.getAccountNumber();
 		agent.closeAccount(accountNumber);
+		
 		request.getSession().setAttribute("message", "Account closed");
 		request.getRequestDispatcher("CustomerHome").forward(request, response);
 	}

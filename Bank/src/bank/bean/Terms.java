@@ -2,6 +2,12 @@ package bank.bean;
 
 import java.sql.Date;
 
+/**
+ * This class models the terms of an Account.
+ * 
+ * @author Spikeydog
+ *
+ */
 public class Terms {
 	private int termsID;
 	private int accountNumber;
@@ -15,6 +21,9 @@ public class Terms {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Auto-generated getters and setters below
+	 */
 	public int getTermsID() {
 		return termsID;
 	}

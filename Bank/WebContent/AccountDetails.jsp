@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Credit Dauphine</title>
 <script>
 	function setAction(event) {
 		document.getElementById("actionID").value = event.target.id;
@@ -23,19 +23,75 @@
 	<jsp:include page="CustomerHeader.jsp"/>
 	<H2>Account Details - <%= account==null? "Empty" : account.getAccountNumber() %></H2>
 </header>
-Minimum balance: <%= terms!=null? terms.getMinBalance() : "Pending approval" %>
+<table>
+<tr>
+		<td width="160">	
+			Description: 
+		</td>
+			
+		<td>
+			<%= account!=null? account.getDescription() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Current balance: 
+		</td>
+			
+		<td>
+			<%= account!=null? account.getBalance() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Minimum balance: 
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getMinBalance() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Maximum balance: 
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getMaxBalance() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Interest rate:  
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getInterestRate() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Period:  
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getPeriod() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Monthly fee:
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getFees() : "Pending approval" %>
+		</td>
+	</tr>
+	
+</table>
 <br>
-Maximum balance: <%= terms!=null? terms.getMaxBalance() : "Pending approval" %>
-<br>
-Interest rate: <%= terms!=null? terms.getInterestRate() : "Pending approval" %>
-<br>
-Monthly fee: <%= terms!=null? terms.getFees() : "Pending approval" %>
-<br>
-Period: <%= terms!=null? terms.getPeriod() : "Pending approval" %>
-<br>
-
 <form action="MarkFraud">
-<table width="100%" frame="box">
+<table width="1130" frame="box">
 		<tr>
 			<td width="20%">
 				Transaction Time
@@ -88,15 +144,32 @@ Period: <%= terms!=null? terms.getPeriod() : "Pending approval" %>
 <%
 	int flag = 0;
 	String value = "None";
+	String action = null;
 	switch (account.getType()) {
-	case CHECKING: flag = 1; value = "Request Checks"; break;
-	case CREDIT:	flag = 2; value = "Request Credit Card"; break;
-	case SAVINGS:	flag = 3; value = "Request New Terms"; break;
-	case LOAN: flag = 4; value = "Make payment"; break;
+	case CHECKING: flag = 1; value = "Request Checks"; 
+		action = "alert('Checks will be mailed shortly and should arrive within 5-10 business days')";
+		break;
+		
+	case CREDIT:	flag = 2; value = "Request Credit Card";
+		action = "alert('Your new card should within 5-10 business days\nIf you possess your previous card, please destroy it')";
+		break;
+	case SAVINGS:	flag = 3; value = "Request New Terms"; 
+		action = "alert('Your banker will review your account')";
+		break;
+	case LOAN: flag = 4; value = "Make payment";
+		action = "window.location.assign('Transfer.jsp?target=" 
+			+ account.getAccountNumber() + "')";
+		break;
 	default: value = "";
 	}
+	
+	if (account.isFrozen()) {
+		action = "alert('We are sorry, but your request cannot be fulfilled at this time')";
+	}
+	
 	if (0 < flag) {
-		out.write("<input id='" + flag + "' type='submit' onclick='setAction(event)' value='" + value + "'/>");
+		out.write("<input id='" + flag + "' type=\"button\" onclick=\"" 
+			+ action + "\" value=\"" + value + "\" />");
 	}
 %>
 	<br>

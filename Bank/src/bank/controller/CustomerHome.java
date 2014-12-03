@@ -13,7 +13,10 @@ import bank.bean.User;
 import bank.util.AccountAgent;
 
 /**
+ * This controller populates a customer's home page with summary data
  * Servlet implementation class CustomerAccountSummary
+ * 
+ * @author Spikeydog
  */
 @WebServlet(name="CustomerHome", urlPatterns="/CustomerHome")
 public class CustomerHome extends HttpServlet {
@@ -45,6 +48,8 @@ public class CustomerHome extends HttpServlet {
 		
 		AccountAgent agent = new AccountAgent();
 		String URL = null;
+		
+		/* Guarantee the user exists */
 		if (null != user) {
 			session.setAttribute("accounts", agent.getAccounts(user.getUserID()));
 			URL = "CustomerHome.jsp";

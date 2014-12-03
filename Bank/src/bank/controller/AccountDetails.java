@@ -18,7 +18,11 @@ import bank.util.AccountAgent;
 import bank.util.Role;
 
 /**
+ * This controller processes requests to view customer account details
+ * 
  * Servlet implementation class AccountDetails
+ * 
+ * @author Spikeydog
  */
 @WebServlet(name="AccountDetails", urlPatterns="/AccountDetails")
 public class AccountDetails extends HttpServlet {

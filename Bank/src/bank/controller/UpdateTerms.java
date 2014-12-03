@@ -14,7 +14,14 @@ import bank.bean.Terms;
 import bank.util.AccountAgent;
 
 /**
+ * This controller handles a user's entry to the UpdateTerms page. 
+ * 
+ * It makes sure that if there are no terms, an empty bean with an account
+ * number is passed up instead.
+ * 
  * Servlet implementation class UpdateTerms
+ * 
+ * @author Spikeydog
  */
 @WebServlet("/UpdateTerms")
 public class UpdateTerms extends HttpServlet {
@@ -44,6 +51,7 @@ public class UpdateTerms extends HttpServlet {
 		Account account = agent.getAccount(accountID);
 		Terms terms = agent.getTerms(account);
 			
+		/* If there are no terms, we need to create a dummy to avoid crashes */
 		if (null == terms) {
 			terms = new Terms();
 			terms.setAccountNumber(accountID);

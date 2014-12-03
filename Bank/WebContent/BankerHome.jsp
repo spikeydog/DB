@@ -56,6 +56,7 @@
 	 	scribe.append("<tr><td>There are no pending account requests</td></tr>");
 	 } else {
 		 out.write(accounts.size() + " accounts require your attention<br>");
+		 int i = 0;
 		 for (OwnedAccount account : accounts) {
 			 scribe = new StringBuilder();
 			 int num = account.getAccountNumber();
@@ -70,6 +71,7 @@
 			 scribe.append("<td>").append(account.getBalance()).append("</td>");
 			 scribe.append("</tr>");
 			 out.write(scribe.toString());
+			 if (++i == accounts.size()) {break;}
 		 }
 	 }
 	 out.write(scribe.toString());

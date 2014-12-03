@@ -20,7 +20,11 @@ import bank.util.AccountAgent;
 import bank.util.Role;
 
 /**
+ * This controller handles requests to populate a banker homepage with data.
+ * 
  * Servlet implementation class BankerHome
+ * 
+ * @author Spikeydog
  */
 @WebServlet(name="BankerHome", urlPatterns="/BankerHome")
 public class BankerHome extends HttpServlet {

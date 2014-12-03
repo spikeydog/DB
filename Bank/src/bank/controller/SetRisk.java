@@ -12,7 +12,11 @@ import bank.bean.Customer;
 import bank.util.UserAgent;
 
 /**
+ * This controller handles requests to update a customer's risk rating.
+ * 
  * Servlet implementation class SetRisk
+ * 
+ * @author Spikeydog
  */
 @WebServlet("/SetRisk")
 public class SetRisk extends HttpServlet {
@@ -41,11 +45,13 @@ public class SetRisk extends HttpServlet {
 		int customerID = Integer.valueOf(request.getParameter("customerID"));
 		UserAgent agent = new UserAgent();
 		
+		/* Make sure a value was passed in; assumed OK */
 		if (null != risk) {
 			System.out.println("Setting risk to: " + risk);
 			agent.setRisk(risk, customerID);
 			agent.getCustomer(customerID, request.getSession());
 		}
+		
 		String URL = "CustomerAccountDetails?customerID=" + customerID;
 		request.getRequestDispatcher(URL).forward(request, response);
 	}

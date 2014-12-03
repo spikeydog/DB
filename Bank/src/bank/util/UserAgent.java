@@ -14,6 +14,13 @@ import	bank.bean.Banker;
 import bank.bean.User;
 import	static bank.util.Code.*;
 
+/**
+ * This class handles interactions with the database for Users, Customers, and
+ * Bankers
+ * 
+ * @author Spikeydog
+ *
+ */
 public class UserAgent extends AbstractDatabaseClass {
 	/** The actual query to execute. */
 	private String query = null;
@@ -65,6 +72,11 @@ public class UserAgent extends AbstractDatabaseClass {
 		return customer;
 	}
 	
+	/**
+	 * This method puts the current Customer data into the session.
+	 * 
+	 * @param session
+	 */
 	public void getCustomerProfile(HttpSession session) {
 		query = "SELECT * FROM customers WHERE user_id=?";
 		User user = (User) session.getAttribute("user");
@@ -93,6 +105,13 @@ public class UserAgent extends AbstractDatabaseClass {
 		session.setAttribute("customer", customer);
 	}
 	
+	/**
+	 * This method obtains a Customer object with the given identifier that is
+	 * associated with the currently authenticated banker.
+	 * 
+	 * @param customerID
+	 * @param session
+	 */
 	public void getCustomer(int customerID, HttpSession session) {
 		query = "SELECT email_address, cus_address1, cus_address2, cus_city,"
 				+ "cus_state, cus_zip_code, cus_telephone, cus_risk, first_name,"
@@ -109,6 +128,7 @@ public class UserAgent extends AbstractDatabaseClass {
 			statement.setInt(1, customerID);
 			statement.setInt(2, banker.getUserID());
 			results = statement.executeQuery();
+			
 			if (results.next()) {
 				customer.setEmailAddress(results.getString("email_address"));
 				customer.setAddress1(results.getString("cus_address1"));
@@ -129,8 +149,14 @@ public class UserAgent extends AbstractDatabaseClass {
 		session.setAttribute("customer", customer);
 	}
 	
+	/**
+	 * This method updates the customer table to reflect customer profile
+	 * changes. 
+	 * 
+	 * @param customer
+	 * @return
+	 */
 	public Code updateCustomerProfile(Customer customer) {
-		Customer updatedCustomer = customer;
 		query = "UPDATE customers SET(email_address=?,address1=?,address2=?,"
 				+ "cus_city=?, cus_state=?, cus_zip_code=?, cus_telephone=?)";
 		query = "CALL update_customer(?,?,?,?,?,?,?,?,?)";
@@ -208,6 +234,13 @@ public class UserAgent extends AbstractDatabaseClass {
 		return banker;
 	}
 	
+	/**
+	 * This method inserts a new customer record into the database if it does
+	 * not conflict with existing records and returns the status code.
+	 * 
+	 * @param c
+	 * @return
+	 */
 	public Code registerCustomer(Customer c) {
 		// Flag indicating authentication was successful 
 		Code code = null;
@@ -247,6 +280,13 @@ public class UserAgent extends AbstractDatabaseClass {
 		return code;
 	}
 	
+	/**
+	 * This method inserts a new banker into the database if it does not conflict
+	 * with any existing records. Returns the status code.
+	 * 
+	 * @param b
+	 * @return
+	 */
 	public Code registerEmployee(Banker b) {
 		// Flag indicating authentication was successful 
 		Code code = null;
@@ -279,6 +319,11 @@ public class UserAgent extends AbstractDatabaseClass {
 		return code;
 	}
 	
+	/**
+	 * This updates the customer table for the new risk rating.
+	 * @param risk
+	 * @param customerID
+	 */
 	public void setRisk(String risk, int customerID) {
 		query = "UPDATE customers SET cus_risk=? WHERE user_id=?";
 		super.connect();
@@ -297,6 +342,10 @@ public class UserAgent extends AbstractDatabaseClass {
 		}
 	}
 	
+	/**
+	 * This method updates the user table to reflect a password change.
+	 * @param user
+	 */
 	public void changePassword(User user) {
 		query = "UPDATE user SET user_password=? WHERE user_id=?";
 		super.connect();

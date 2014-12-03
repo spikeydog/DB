@@ -1,5 +1,12 @@
 package bank.util;
 
+/**
+ * Enumerated class for the status codes for some database interactions so an
+ * appropriate success or error message can be displayed.
+ * 
+ * @author Spikeydog
+ *
+ */
 public enum Code {
 	OK(1, "Action successful!"),
 	SQL_ERROR(-1, "A database error occurred"),
@@ -19,6 +26,12 @@ public enum Code {
 		this.message = message;
 	}
 	
+	/**
+	 * This method returns the Code with the given numeric code.
+	 * 
+	 * @param value
+	 * @return
+	 */
 	public static Code getCode(int value) {
 		Code code = null;
 		switch (value) {

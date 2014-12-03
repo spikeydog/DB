@@ -70,6 +70,7 @@
 		</tr>
 	</table>
 	<input type="submit" value="Update Terms"/>
+	<input onclick="window.history.back()" type="cancel" value="Cancel"/>
 </form>
 </body>
 </html>

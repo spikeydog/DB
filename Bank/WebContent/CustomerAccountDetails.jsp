@@ -16,6 +16,11 @@
 		input.value = txid;
 		document.forms['reverse'].submit();
 	}
+	function setFreeze(accountID, freeze) {
+		document.getElementById('freezerID').value = accountID;
+		document.getElementById('freezerFlag').value = freeze;
+		document.forms['freezer'].submit();
+	}
 </script>
 </head>
 <body>
@@ -172,6 +177,10 @@
 	</table>
 </td>
 <td valign="top">
+<form id="freezer" method="post" action="FreezeAccount">
+	<input type="hidden" name="customerID" value="<%= customer.getUserID()%>"/>
+	<input id="freezerID" type="hidden" name="freezerID" value="<%= account %>"/>
+	<input id="freezerFlag" type="hidden" name="freezerFlag"/>
 <table style="vertical-align:top">
 	<tr>
 		<td width="100">
@@ -187,9 +196,7 @@
 			<label>Frozen</label>
 		</td>
 	</tr>
-	<form method="post" action="FreezeAccount">
-	<input type="hidden" name="customerID" value="<%= customer.getUserID()%>"/>
-	<input id="freezer" type="hidden" name="accountID" value="<%= account %>"/>
+	
 	<%
 		StringBuilder scribe = new StringBuilder();
 		for (Account each : accounts) {
@@ -200,17 +207,18 @@
 			append(each.getAccountNumber()).append("</a></td>").
 			append("<td>").append(each.getType().string).append("</td>").
 			append("<td>").append(each.getBalance()).append("</td>").
-			append("<td>").append(each.isFrozen()? "yes" 
-				: "<input type=\"submit\" "
-				+ " onclick=\"document.getElementById('freezer').value=" 
-				+ num + "\" value=\"Freeze Account\" />").append("</td>").
+			append("<td><input type=\"button\" onclick=\"setFreeze(").
+			append(num).append(", ").append(!each.isFrozen()).append(")\" ").
+			append("value=\"").append(each.isFrozen()? "Unfreeze Account" : "Freeze Account").
+			append("\"></td>").
 			append("<td><a href=\"UpdateTerms?accountID=" + num + "\">Set Terms</a></td>");
 			scribe.append("</tr>");
 		}
 		out.write(scribe.toString());
 	%>
-	</form>
+	
 </table>
+</form>
 </td>
 </tr>
 </table>
@@ -257,7 +265,7 @@
 				scribe.append("<td>").append(tx.getIssuer()).append("</td>");
 				scribe.append("<td>").append(tx.getAmount()).append("</td>");
 				
-				if (!tx.isReversed()) {
+				if (tx.isFraud() && !tx.isReversed()) {
 					scribe.append("<td><input type=\"checkbox\" "
 							+ "onclick=\"setTXID(" + tx.getTransID() + ")\" "
 							+ " /></td>");

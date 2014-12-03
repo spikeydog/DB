@@ -2,6 +2,11 @@ package bank.bean;
 
 import bank.util.Role;
 
+/**
+ * This class models a generic user of the database application
+ * @author Spikeydog
+ *
+ */
 public class User {
 	private int userID;
 	private String username;
@@ -14,6 +19,15 @@ public class User {
 		
 	}
 	
+	/**
+	 * Creates a new User from the given parameters.
+	 * @param userID
+	 * @param username
+	 * @param password
+	 * @param firstName
+	 * @param lastName
+	 * @param role
+	 */
 	public User(int userID, String username, String password, String firstName, 
 			String lastName, Role role) {
 		this.userID = userID;
@@ -24,6 +38,9 @@ public class User {
 		this.role = role;
 	}
 	
+	/**
+	 * Auto-generated getters and setters below
+	 */
 	public String getUsername() {
 		return username;
 	}
@@ -55,16 +72,6 @@ public class User {
 
 	public void setUserID(int userID) {
 		this.userID = userID;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder scribe = new StringBuilder();
-		scribe.append(super.toString());
-		scribe.append(firstName).append(lastName);
-		scribe.append(role);
-		return scribe.toString();
-	
 	}
 
 	public Role getRole() {

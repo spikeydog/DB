@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Credit Dauphine</title>
 </head>
 <body>
 <header>
@@ -35,15 +35,6 @@
 					
 				<td>
 					<input id="description" name="description" type="text"/>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="balance">Amount to Deposit:</label>
-				</td>
-					
-				<td>
-					<input id="balance" name="balance" type="text"/>
 				</td>
 			</tr>
 			<tr>	

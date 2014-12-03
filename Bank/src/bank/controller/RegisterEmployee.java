@@ -15,7 +15,11 @@ import bank.util.Role;
 import bank.util.UserAgent;
 
 /**
+ * This controller handles registration for employee accounts. 
+ * 
  * Servlet implementation class RegisterEmployee
+ * 
+ * @author Spikeydog
  */
 @WebServlet(name="RegisterEmployee", urlPatterns="/RegisterEmployee")
 public class RegisterEmployee extends HttpServlet {
@@ -55,9 +59,12 @@ public class RegisterEmployee extends HttpServlet {
 		banker = new Banker(user, employeeID);
 		code = agent.registerEmployee(banker);
 		
+		/* Registration successful */
 		if (Code.OK == code) {
 			URL = "Login.jsp";
 			request.getSession().setAttribute("user", banker);
+			
+		/* Registration failed */
 		} else {
 			URL = "RegisterEmployee.jsp";
 		}

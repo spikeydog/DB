@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Credit Dauphine Customer Home</title>
+<title>Credit Dauphine</title>
 <script>
 	function foo(value) {
 		document.getElementById("accountID").value= value;
@@ -28,16 +28,19 @@
 	<H3>Accounts Overview</H3>
 	<form method="post" id="accountsForm" action="AccountActivity">
 	<input name="accountID" id="accountID" type="hidden" />
-	<table width="100%" frame="box">
+	<table width="1130" frame="box">
 		<tr>
-			<td width="30%">
+			<td width="15%">
 				Account
 			</td>
-			<td width="30%">
+			<td width="15%">
 				Type
 			</td>
-			<td width="30%">
+			<td width="15%">
 				Current Balance
+			</td>
+			<td width="15%">
+				Account Active?
 			</td>
 		</tr>
 	<%
@@ -51,7 +54,11 @@
 		 } else {
 			 for (Account account : accounts) {
 				 scribe.append("<tr><td><a method=\"post\" href=\"AccountDetails?index=").append(i++)
-				 .append("\">").append(account.getAccountNumber()).append("</a></td></tr>");
+				 .append("\">").append(account.getAccountNumber()).append("</a></td>").
+				 append("<td>").append(account.getType().string).append("</td>").
+				 append("<td>").append(account.getBalance()).append("</td>").
+				 append("<td>").append(account.isFrozen()? "No" : "Yes").append("</td>").
+				 append("</tr>");
 			 }
 		 }
 		 out.write(scribe.toString());

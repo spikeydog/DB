@@ -18,7 +18,12 @@ import bank.util.AccountAgent;
 import bank.util.UserAgent;
 
 /**
+ * This controller processes requests to provide customer, account, and 
+ * transaction data.
+ * 
  * Servlet implementation class CustomerAccountDetails
+ * 
+ * @author Spikeydog
  */
 @WebServlet("/CustomerAccountDetails")
 public class CustomerAccountDetails extends HttpServlet {
@@ -49,8 +54,10 @@ public class CustomerAccountDetails extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 		
 		int customerID = Integer.valueOf(request.getParameter("customerID")); 
-		agentC.getCustomer(customerID, session);
 		int accountID  = Integer.valueOf(request.getParameter("accountID"));
+		
+		/* Set session data the JSP uses */
+		agentC.getCustomer(customerID, session);
 		session.setAttribute("accountID", accountID);
 		session.setAttribute("accounts", agentA.getAccounts(customerID));
 		session.setAttribute("trans", agentA.getTransactions(accountID, user.getRole()));

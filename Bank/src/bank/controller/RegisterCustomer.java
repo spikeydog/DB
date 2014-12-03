@@ -3,6 +3,7 @@ package bank.controller;
 import java.io.IOException;
 
 import bank.bean.Customer;
+import bank.bean.User;
 import bank.util.UserAgent;
 import bank.util.Code;
 
@@ -14,7 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * This controller handles registration requests for customers.
+ * 
  * Servlet implementation class RegisterCustomer
+ * 
+ * @author Spikeydog
  */
 @WebServlet(name="RegisterCustomer", urlPatterns="/RegisterCustomer")
 public class RegisterCustomer extends HttpServlet {
@@ -51,12 +56,16 @@ public class RegisterCustomer extends HttpServlet {
 		String state = request.getParameter("state");
 		String zip = request.getParameter("zip");
 		String phone = request.getParameter("phone");
-		Customer c = new Customer(0, username, password, firstName, lastName,
-				email, ssn, address1, address2, city, state, zip, phone, 0, 0);
+		User user = new User(0, username, password, firstName, lastName, null);
+		Customer c = new Customer(user, email, ssn, address1, address2, city, 
+				state, zip, phone, 0, 0);
+		
 		UserAgent agent = new UserAgent();
 		Code code = agent.registerCustomer(c);
 		request.getSession().setAttribute("message", code.message);
 		String URL = null;
+		
+		/* Only refer to Login page on success */
 		switch (code) {
 		case OK: URL = "Login.jsp"; break;
 		default: URL = "RegisterCustomer.jsp";

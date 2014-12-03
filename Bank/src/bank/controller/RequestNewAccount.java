@@ -19,7 +19,11 @@ import bank.util.AccountAgent;
 import bank.util.AccountType;
 
 /**
+ * This controller handles requests to create new accounts.
+ * 
  * Servlet implementation class RequestNewAccount
+ * 
+ * @author Spikeydog
  */
 @WebServlet(name="RequestNewAccount", urlPatterns="/RequestNewAccount")
 public class RequestNewAccount extends HttpServlet {
@@ -51,6 +55,7 @@ public class RequestNewAccount extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 		AccountAgent agent = new AccountAgent();
 		
+		/* Make sure the user actually exists */
 		if (null != user) {
 			Account account = new Account();
 			account.setUserID(user.getUserID());
@@ -58,10 +63,11 @@ public class RequestNewAccount extends HttpServlet {
 			account.setDescription(request.getParameter("description"));
 			account.setFrozen(true);
 			account.setDateCreated(new Timestamp(System.currentTimeMillis()));
-			account.setBalance(Double.valueOf(request.getParameter("balance")));			
+			account.setBalance(0);			
 			agent.requestAccount(account);
 			agent.getAccounts(user.getUserID());
 		}
+		
 		dispatcher = request.getRequestDispatcher("CustomerHome");
 		dispatcher.forward(request, response);
 	}

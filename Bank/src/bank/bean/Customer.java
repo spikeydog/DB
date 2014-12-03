@@ -2,6 +2,16 @@ package bank.bean;
 
 import bank.util.Role;
 
+/**
+ * This class models a Customer of the web application
+ * 
+ * @author Spikeydog
+ *
+ */
+/**
+ * @author Spikeydog
+ *
+ */
 public class Customer extends User {
 	private String emailAddress;
 	private String ssn;
@@ -14,24 +24,42 @@ public class Customer extends User {
 	private int bankerID;
 	private int riskRating;
 	
+	/**
+	 * Default no-args constructor.
+	 */
 	public Customer() {
 	}
 	
+	
+	/**
+	 * Creates a new Customer from an existing User
+	 * @param user
+	 */
 	public Customer(User user) {
 		super(user.getUserID(), user.getUsername(), user.getPassword(), 
 				user.getFirstName(), user.getLastName(), user.getRole());
 	}
 
-	public Customer(int userID, String username, String password, String firstName,
-			String lastName) {
-		super(userID, username, password, firstName, lastName, Role.CUSTOMER);
-	}
 	
-	public Customer(int userID, String username, String password, String firstName,
-			String lastName, String emailAddress, String ssn, String address1, 
+	/**
+	 * @param user			The existing User to base this Customer from
+	 * @param emailAddress
+	 * @param ssn
+	 * @param address1
+	 * @param address2
+	 * @param city
+	 * @param state
+	 * @param zipCode
+	 * @param telephone
+	 * @param bankerID
+	 * @param riskRating
+	 */
+	public Customer(User user, String emailAddress, String ssn, String address1, 
 			String address2, String city, String state, String zipCode, 
 			String telephone, int bankerID, int riskRating) {
-		super(userID, username, password, firstName, lastName, Role.CUSTOMER);
+		
+		super(user.getUserID(), user.getUsername(), user.getPassword(), 
+				user.getFirstName(), user.getLastName(), user.getRole());
 		this.emailAddress = emailAddress;
 		this.ssn = ssn;
 		this.address1 = address1;
@@ -44,6 +72,9 @@ public class Customer extends User {
 		this.riskRating = riskRating;
 	}
 
+	/**
+	 * Auto-generated getters and setters below
+	 */
 	public String getEmailAddress() {
 		return emailAddress;
 	}

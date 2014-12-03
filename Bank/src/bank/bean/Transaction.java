@@ -4,6 +4,12 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+/**
+ * This class models a transaction on an Account.
+ * 
+ * @author Spikeydog
+ *
+ */
 public class Transaction implements Serializable {
 	private int accountNumber;
 	private int transID;
@@ -17,7 +23,10 @@ public class Transaction implements Serializable {
 	public Transaction() {
 		// TODO Auto-generated constructor stub
 	}
-
+		
+	/**
+	 * Auto-generated getters and setters below
+	 */
 	public int getAccountNumber() {
 		return accountNumber;
 	}

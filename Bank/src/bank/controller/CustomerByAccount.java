@@ -13,7 +13,12 @@ import bank.util.AccountAgent;
 import bank.util.UserAgent;
 
 /**
+ * This controller prefixes CustomerAccountDetails by retrieving customer data
+ * based on the given account number.
+ * 
  * Servlet implementation class CustomerByAccount
+ * 
+ * @author Spikeydog
  */
 @WebServlet("/CustomerByAccount")
 public class CustomerByAccount extends HttpServlet {
@@ -41,9 +46,13 @@ public class CustomerByAccount extends HttpServlet {
 		AccountAgent agentA = new AccountAgent();
 		UserAgent agentU = new UserAgent();
 		User customer = null;
+		
+		/* Process input */
 		int accountID = Integer.valueOf(request.getParameter("accountID"));
 		int customerID = agentA.getCustomerIdByAccountID(accountID);
 		agentU.getCustomer(customerID, request.getSession());
+		
+		/* Forward */
 		String URL = "CustomerAccountDetails?customerID=" + customerID 
 				+ "&accountID=" + accountID;
 		request.getRequestDispatcher(URL).forward(request, response);

@@ -12,7 +12,11 @@ import bank.util.AccountAgent;
 import bank.util.Code;
 
 /**
+ * This controller handles requests to transfer funds. 
+ * 
  * Servlet implementation class Transfer
+ * 
+ * @author Spikeydog
  */
 @WebServlet(name="Transfer", urlPatterns="/Transfer")
 public class Transfer extends HttpServlet {
@@ -41,9 +45,17 @@ public class Transfer extends HttpServlet {
 		int target = Integer.valueOf(request.getParameter("target"));
 		double amount = Double.valueOf(request.getParameter("amount"));
 		AccountAgent agent = new AccountAgent();
-		Code code = agent.transfer(source, target, amount);
-		request.getSession().setAttribute("message", code.message);
+		
+		/* Guarantee the amount is positive */
+		if (amount > 0) {
+			Code code = agent.transfer(source, target, amount);
+			request.getSession().setAttribute("message", code.message); 
+			
+		/* Send a custom message instead */
+		} else {
+			request.getSession().setAttribute("message", "You cannot transfer a negative balance");
+		}
+		
 		request.getRequestDispatcher("Transfer.jsp").forward(request, response);
 	}
-
 }

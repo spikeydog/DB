@@ -16,30 +16,76 @@
 <header>
 	<jsp:include page="CustomerHeader.jsp"/>
 	<H2>Close Account <%= account.getAccountNumber() %></H2>
-	<H3>Are you sure you want to close this account?</H3>
+	
+	<% if (account.getBalance() > 0) {
+		out.write("<H3>Are you sure you want to close this account?</H3><br>");
+		out.write("Your remaining balance will be refunded by cashier's check");
+	} else if (account.getBalance() < 0) {
+		out.write("You cannot close an account with negative balance.");	
+	}
+	%>
 </header>
-Current balance: <%= account.getBalance() %>
-<br>
-Minimum balance: <%= terms.getMinBalance() %>
-<br>
-Maximum balance: <%= terms.getMaxBalance() %>
-<br>
-Interest rate: <%= terms.getInterestRate() %>
-<br>
-Monthly fee: <%= terms.getFees() %>
-<br>
-Period: <%= terms.getPeriod() %>
-<br>
-<br>
+<table>
+	<tr>
+		<td width="160">	
+			Minimum balance: 
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getMinBalance() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Maximum balance: 
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getMaxBalance() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Interest rate:  
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getInterestRate() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Period:  
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getPeriod() : "Pending approval" %>
+		</td>
+	</tr>
+	<tr>
+		<td width="160">	
+			Monthly fee:
+		</td>
+			
+		<td>
+			<%= terms!=null? terms.getFees() : "Pending approval" %>
+		</td>
+	</tr>
+	
+</table>
+
 <br>
 <form action="CloseAccount" method="post">
-	<input 	type="submit" 
-			value="Close Account">
-	</input>
+	
+	<%
+		if (account.getBalance() > 0) {
+			out.write("<input type=\"submit\" value=\"Close Account\"></input>");
+		}
+	%>
 	<input 	type="button" 
 			value="Cancel" 
 			onclick="window.location.assign('AccountDetails.jsp')">
-	</input>;
+	</input>
 </form>
 
 </body>

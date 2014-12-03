@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Credit Dauphine</title>
 <script>
 	function size() {
 		return 25;
@@ -61,7 +61,7 @@
 			</td>
 		</tr>
 		</table>
-	</fieldset>
+	</fieldset><br><br>
 	<fieldset><legend>Update Contact Information</legend>
 	<table>
 		<tr>
@@ -81,7 +81,7 @@
 				</td>
 			</tr>
 			</table>
-	</fieldset>
+	</fieldset><br><br>
 	<fieldset><legend>Update Billing Address</legend>
 	<table>
 		<tr>
@@ -135,10 +135,9 @@
 		<td>
 		</td>
 		<td>
-			<input id="cancel" name="cancel" size="size()" value="Cancel" type="reset"/>
+			<input id="cancel" name="cancel" type=button value="Cancel" onclick="window.history.back()"/>
 		</td>
 	</tr>
 </form>
-<p>This page allows a customer to update various pieces of customer information.
 </body>
 </html>

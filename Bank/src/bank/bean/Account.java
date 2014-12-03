@@ -5,6 +5,11 @@ import java.io.Serializable;
 
 import bank.util.AccountType;
 
+/**
+ * This class models a bank account
+ * 
+ * @author Spikeydog
+ */
 public class Account implements Serializable {
 	private int accountNumber;
 	private int userID;
@@ -19,6 +24,17 @@ public class Account implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Constructor used for quick construction of test objects. 
+	 * 
+	 * @param accountNumber
+	 * @param userID
+	 * @param type
+	 * @param descr
+	 * @param balance
+	 * @param dateCreated
+	 * @param isFrozen
+	 */
 	public Account(int accountNumber, int userID, String type, String descr,
 			double balance, Timestamp dateCreated, boolean isFrozen) {
 		this.accountNumber = accountNumber;
@@ -30,6 +46,9 @@ public class Account implements Serializable {
 		this.isFrozen = isFrozen;
 	}
 
+	/**
+	 * Auto-generated getters and setters below
+	 */
 	public int getAccountNumber() {
 		return accountNumber;
 	}

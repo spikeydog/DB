@@ -12,7 +12,11 @@ import javax.servlet.http.HttpSession;
 import bank.util.UserAgent;
 
 /**
+ * This controller handles requests to view customer profile data.
+ * 
  * Servlet implementation class ViewProfile
+ * 
+ * @author Spikeydog
  */
 @WebServlet("/ViewProfile")
 public class ViewProfile extends HttpServlet {
@@ -42,5 +46,4 @@ public class ViewProfile extends HttpServlet {
 		agent.getCustomerProfile(session);
 		request.getRequestDispatcher("ViewProfile.jsp").forward(request, response);
 	}
-
 }

@@ -17,6 +17,11 @@ import bank.bean.Transaction;
 import bank.bean.User;
 import bank.util.AbstractDatabaseClass;
 
+/**
+ * This class performs account-related queries to the database.
+ * 
+ * @author Spikeydog
+ */
 public class AccountAgent extends AbstractDatabaseClass {
 	String query = null;
 	PreparedStatement statement = null;
@@ -26,6 +31,12 @@ public class AccountAgent extends AbstractDatabaseClass {
 		super();
 	}
 	
+	/**
+	 * This method obtains the list of account for a given User
+	 * 
+	 * @param userID
+	 * @return
+	 */
 	public List<Account> getAccounts(int userID) {
 		List<Account> accounts = new LinkedList<Account>();
 		Account account = null;
@@ -56,24 +67,37 @@ public class AccountAgent extends AbstractDatabaseClass {
 		return accounts;
 	}
 	
+	/**
+	 * This method obtains the terms for a given account.
+	 * 
+	 * @param account
+	 * @return
+	 */
 	public Terms getTerms(Account account) {
 		Terms terms = null;
 		int accountNumber = account.getAccountNumber();
-		query = "SELECT * FROM terms WHERE account_number=?"
-				+ "ORDER BY terms_id DESC LIMIT 1";
+		query = "SELECT * "
+				+ "FROM terms "
+				+ "WHERE account_number=? "
+				+ "ORDER BY terms_id DESC "
+				+ "LIMIT 1";
 		super.connect();
 		try {
 			statement = getPreparedStatement(query);
 			statement.setInt(1, accountNumber);
 			results = statement.executeQuery();
+			
 			if (results.next()) {
 				terms = new Terms();
+				terms.setTermsID(results.getInt("terms_id"));
 				terms.setAccountNumber(results.getInt("account_number"));
 				terms.setTermsID(results.getInt("terms_id"));
 				terms.setFees(results.getFloat("fees"));
 				terms.setMinBalance(results.getDouble("min_balance"));
 				terms.setMaxBalance(results.getDouble("max_balance"));
 				terms.setPeriod(results.getDate("period"));
+			} else {
+				System.out.println("No terms");
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -84,6 +108,11 @@ public class AccountAgent extends AbstractDatabaseClass {
 		return terms;
 	}
 	
+	/**
+	 * This class inserts a new account into the database.
+	 * 
+	 * @param account
+	 */
 	public void requestAccount(Account account) {
 		query = "INSERT INTO general_accounts "
 				+ "(account_number, user_id, account_type, account_descrip, "
@@ -108,6 +137,13 @@ public class AccountAgent extends AbstractDatabaseClass {
 		}
 	}
 	
+	/**
+	 * This method gets an Account object that represents the account with the 
+	 * given accountID.
+	 * 
+	 * @param accountID		the account_number of the account
+	 * @return
+	 */
 	public Account getAccount(int accountID) {
 		query = "SELECT * FROM general_accounts WHERE account_number=?";
 		Account account = new Account();
@@ -136,6 +172,14 @@ public class AccountAgent extends AbstractDatabaseClass {
 		return account;
 	}
 	
+	/**
+	 * This method obtains the list of transaction for the given account number
+	 * and role. Bankers can view transactions that have been reversed.
+	 * 
+	 * @param accountNumber
+	 * @param role
+	 * @return
+	 */
 	public List<Transaction> getTransactions(int accountNumber, Role role) {
 		List<Transaction> trans = new LinkedList<Transaction>();
 		Transaction tx = null;
@@ -172,6 +216,11 @@ public class AccountAgent extends AbstractDatabaseClass {
 		return trans;
 	}
 	
+	/**
+	 * This method updates a transaction to set it as possibly fraudulent.
+	 * 
+	 * @param tx		the transaction to update
+	 */
 	public void setFraudulent(Transaction tx) {
 		query = "UPDATE transactions SET fraud=TRUE WHERE trans_id=?";
 		super.connect();
@@ -187,6 +236,15 @@ public class AccountAgent extends AbstractDatabaseClass {
 		}
 	}
 	
+	/**
+	 * This method uses a transactional procedure to transfer money from one
+	 * account to another and generate appropriate transactions.
+	 * 
+	 * @param source
+	 * @param target
+	 * @param amount
+	 * @return
+	 */
 	public Code transfer(int source, int target, double amount) {
 		Code code = null;
 		query = "CALL transfer(?, ?, ?)";
@@ -209,6 +267,12 @@ public class AccountAgent extends AbstractDatabaseClass {
 		return code;
 	}
 	
+	/**
+	 * This method deletes the given account from the database. Credit Dauphine
+	 * is nihilist.
+	 * 
+	 * @param accountNumber
+	 */
 	public void closeAccount(int accountNumber) {
 		query = "CALL close_account(?)";
 		super.connect();
@@ -224,6 +288,13 @@ public class AccountAgent extends AbstractDatabaseClass {
 		}
 	}
 	
+	/**
+	 * This method obtains all of the frozen accounts visible to the given
+	 * banker.
+	 * 
+	 * @param banker
+	 * @return
+	 */
 	public List<OwnedAccount> getFrozenAccounts(Banker banker) {
 		List<OwnedAccount> accounts = new LinkedList<OwnedAccount>();
 		OwnedAccount account = null;
@@ -261,6 +332,13 @@ public class AccountAgent extends AbstractDatabaseClass {
 		return accounts;
 	}
 	
+	/**
+	 * This method creates a list of all of the transactions marked as fraud 
+	 * a particular banker can view. 
+	 *  
+	 * @param banker
+	 * @return
+	 */
 	public List<Transaction> getFraudulentTransactions(Banker banker) {
 		List<Transaction> trans = new LinkedList<Transaction>();
 		Transaction tx = null;
@@ -299,6 +377,13 @@ public class AccountAgent extends AbstractDatabaseClass {
 		return trans;
 	}
 	
+	/**
+	 * This method obtains the user_id for the customer that controls an 
+	 * account with the given account_number
+	 * 
+	 * @param accountID		the account_number to locate the user_id for
+	 * @return
+	 */
 	public int getCustomerIdByAccountID(int accountID) {
 		int customerID = 0;
 		query = "SELECT user_id FROM general_accounts WHERE account_number=?";
@@ -338,12 +423,20 @@ public class AccountAgent extends AbstractDatabaseClass {
 		}
 	}
 	
-	public void freezeAccount(int accountID) {
-		query = "UPDATE general_accounts SET frozen=TRUE WHERE account_number=?";
+	/**
+	 * This method either freezes or thaw the given account by number.
+	 * 
+	 * @param accountID		the account_number to freeze or unfreeze
+	 * @param freeze		flag indicating if it should be frozen or thawed
+	 */
+	public void freezeAccount(int accountID, boolean freeze) {
+		query = "UPDATE general_accounts SET frozen=? WHERE account_number=?";
+		System.out.println("Freeze? " + freeze);
 		super.connect();
 		try {
 			statement = getPreparedStatement(query);
-			statement.setInt(1, accountID);
+			statement.setBoolean(1, freeze);
+			statement.setInt(2, accountID);
 			statement.execute();
 			
 		} catch (SQLException ex) {
@@ -353,6 +446,10 @@ public class AccountAgent extends AbstractDatabaseClass {
 		}
 	}
 	
+	/**
+	 * This method updates the terms for the associated account
+	 * @param terms
+	 */
 	public void setTerms(Terms terms) {
 		query = "INSERT INTO terms VALUES(DEFAULT,?,?,?,?,?,?)";
 		super.connect();

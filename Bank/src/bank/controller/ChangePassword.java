@@ -14,7 +14,11 @@ import bank.util.Role;
 import bank.util.UserAgent;
 
 /**
+ * This controller processes password change requests.
+ * 
  * Servlet implementation class ChangePassword
+ * 
+ * @author Spikeydog
  */
 @WebServlet("/ChangePassword")
 public class ChangePassword extends HttpServlet {
@@ -47,12 +51,16 @@ public class ChangePassword extends HttpServlet {
 		UserAgent agent = new UserAgent();
 		String URL = null;
 		
+		/* Verify the user exists and has entered a password */
 		if (null != user && null != password) {
 			agent.changePassword(user);			
 		}
+		
+		/* Send bankers to their home */
 		if (Role.BANKER == user.getRole()) {
 			URL = "BankerHome";
-			
+		
+		/* Return customers to their profile view */
 		} else if (Role.CUSTOMER == user.getRole()) {
 			URL = "UpdateProfile";
 		}

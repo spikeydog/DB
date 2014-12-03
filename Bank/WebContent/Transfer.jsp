@@ -4,20 +4,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Credit Dauphine - Transfer Funds</title>
+<title>Credit Dauphine</title>
 </head>
+
 <body>
 <%@ page import="java.util.List, java.util.LinkedList, bank.bean.Account, 
 	bank.util.AccountType"%>
 <%
 	List<Account> accounts = (List<Account>) session.getAttribute("accounts");
+	String target = request.getParameter("target");
+	String defaultTarget = null==target? "" : " default=\"" + target + "\" "; 
 %>
 <header>
 	<jsp:include page="CustomerHeader.jsp"/>
 	<H2>Transfer Funds</H2>
 </header>
 <section>
-<form name="transferForm" method="post" action="Transfer" submit="return validate()">
+<form name="transferForm" method="post" action="Transfer">
 	<fieldset><legend>Select Source and Destination Accounts</legend>
 	<table>
 		<tr>
@@ -30,9 +33,11 @@
 						StringBuilder scribe = new StringBuilder();
 			
 						for (Account account : accounts) {
-							int number = account.getAccountNumber();
-							scribe.append("<option value=\"").append(number)
-							.append("\">").append(number).append("</option>");
+							if (!account.isFrozen()) {
+								int number = account.getAccountNumber();
+								scribe.append("<option value=\"").append(number)
+								.append("\">").append(number).append("</option>");
+							}
 						}
 						out.write(scribe.toString());
 					%>
@@ -44,14 +49,16 @@
 				<label for="dest">Destination Account</label>
 			</td>
 			<td>
-				<select id="target" name="target">
+				<select id="target" name="target" <%= defaultTarget %> >
 					<%
 						scribe = new StringBuilder();
 			
 						for (Account account : accounts) {
-							int number = account.getAccountNumber();
-							scribe.append("<option value=\"").append(number)
-							.append("\">").append(number).append("</option>");
+							if (!account.isFrozen()) {
+								int number = account.getAccountNumber();
+								scribe.append("<option value=\"").append(number)
+								.append("\">").append(number).append("</option>");
+							}
 						}
 						out.write(scribe.toString());
 					%>
@@ -71,7 +78,7 @@
 						type="text"/>
 			</td>
 			<td>
-				<label hidden="true" id="warning" color="#FF0000">Ouch!</label>
+				<label style="" id="warning" color="#FF0000">Enter a positive value!</label>
 			</td>
 		</tr>
 			<td>

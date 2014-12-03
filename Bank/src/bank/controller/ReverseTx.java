@@ -11,7 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import bank.util.AccountAgent;
 
 /**
+ * This controller handles requests to reverse transactions
+ * 
  * Servlet implementation class ReverseTx
+ * 
+ * @author Spikeydog
  */
 @WebServlet("/ReverseTx")
 public class ReverseTx extends HttpServlet {
@@ -41,7 +45,10 @@ public class ReverseTx extends HttpServlet {
 		int customerID = Integer.valueOf((String) request.getParameter("customerID"));
 		int accountID = Integer.valueOf((String) request.getParameter("accountID"));
 		AccountAgent agent = new AccountAgent();
+		
+		/* We're just assuming success here. */
 		agent.reverseTx(txid);
+		
 		String URL = "CustomerAccountDetails?customerID=" + customerID
 				+ "&accountID=" + accountID;
 		request.getRequestDispatcher(URL).forward(request, response);

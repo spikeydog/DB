@@ -15,7 +15,12 @@ import bank.util.Code;
 import bank.util.UserAgent;
 
 /**
+ * This controller handles requests to update a customer profile and password.
+ * Password changes are passed into the ChangePassword controller. 
+ * 
  * Servlet implementation class UpdateProfile
+ * 
+ * @author Spikeydog
  */
 @WebServlet("/UpdateProfile")
 public class UpdateProfile extends HttpServlet {
@@ -43,30 +48,28 @@ public class UpdateProfile extends HttpServlet {
 	protected void doPost(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		User user = (User) request.getSession().getAttribute("user");
-		
 		UserAgent agent = new UserAgent();
 		Customer customer = null;
-		String password = null;
-		String emailAddress = null;
-		String address1 = null;
-		String address2 = null;
-		String city = null;
-		String state = null;
-		String zipCode = null;
-		String telephone = null;
+
 		Code code = null;
 		RequestDispatcher dispatcher = null;
 		String URL;
+		
+		/* Verify there is a user authenticated */
 		if (null != user) {
-			password = request.getParameter("password1");
+			String password = request.getParameter("password1");
+			
+			/* Only update the password if the user actually set one */
 			if (null != password) {user.setPassword(password);}
-			emailAddress = request.getParameter("email");
-			address1 = request.getParameter("address1");
-			address2 = request.getParameter("address2");
-			city = request.getParameter("city");
-			state = request.getParameter("state");
-			zipCode = request.getParameter("zip");
-			telephone = request.getParameter("phone");
+			String emailAddress = request.getParameter("email");
+			String address1 = request.getParameter("address1");
+			String address2 = request.getParameter("address2");
+			String city = request.getParameter("city");
+			String state = request.getParameter("state");
+			String zipCode = request.getParameter("zip");
+			String telephone = request.getParameter("phone");
+			
+			/* Populate the bean */
 			customer = new Customer(user);
 			customer.setAddress1(address1);
 			customer.setAddress2(address2);
@@ -75,17 +78,24 @@ public class UpdateProfile extends HttpServlet {
 			customer.setState(state);
 			customer.setZipCode(zipCode);
 			customer.setTelephone(telephone);
+			
+			/* Actually update stuff and set response message */
 			agent.changePassword(user);
 			code = agent.updateCustomerProfile(customer);
 			agent.getCustomerProfile(request.getSession());
 			request.getSession().setAttribute("message", code.message);
+			
+			/* Return to profile view on success */
 			switch (code) {
 			case OK: URL = "ViewProfile.jsp"; break;
 			default: URL = "UpdateProfile.jsp"; break;
 			}
+			
+		/* Bounce the unauthenticated out */	
 		} else {
 			URL = "Logout";
 		}
+		
 		dispatcher = request.getRequestDispatcher(URL);
 		dispatcher.forward(request, response);
 	}
