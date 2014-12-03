@@ -75,6 +75,7 @@ public class UpdateProfile extends HttpServlet {
 			customer.setState(state);
 			customer.setZipCode(zipCode);
 			customer.setTelephone(telephone);
+			agent.changePassword(user);
 			code = agent.updateCustomerProfile(customer);
 			agent.getCustomerProfile(request.getSession());
 			request.getSession().setAttribute("message", code.message);
@@ -83,7 +84,6 @@ public class UpdateProfile extends HttpServlet {
 			default: URL = "UpdateProfile.jsp"; break;
 			}
 		} else {
-			System.out.println("user is null");
 			URL = "Logout";
 		}
 		dispatcher = request.getRequestDispatcher(URL);

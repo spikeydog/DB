@@ -43,6 +43,7 @@ public class CustomerByAccount extends HttpServlet {
 		User customer = null;
 		int accountID = Integer.valueOf(request.getParameter("accountID"));
 		int customerID = agentA.getCustomerIdByAccountID(accountID);
+		agentU.getCustomer(customerID, request.getSession());
 		String URL = "CustomerAccountDetails?customerID=" + customerID 
 				+ "&accountID=" + accountID;
 		request.getRequestDispatcher(URL).forward(request, response);

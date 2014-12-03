@@ -1,7 +1,6 @@
 package bank.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,22 +11,19 @@ import javax.servlet.http.HttpSession;
 
 import bank.bean.Account;
 import bank.bean.Customer;
-import bank.bean.Transaction;
-import bank.bean.User;
 import bank.util.AccountAgent;
-import bank.util.UserAgent;
 
 /**
- * Servlet implementation class CustomerAccountDetails
+ * Servlet implementation class FreezeAccount
  */
-@WebServlet("/CustomerAccountDetails")
-public class CustomerAccountDetails extends HttpServlet {
+@WebServlet("/FreezeAccount")
+public class FreezeAccount extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CustomerAccountDetails() {
+    public FreezeAccount() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -44,19 +40,16 @@ public class CustomerAccountDetails extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		AccountAgent agentA = new AccountAgent();
-		UserAgent agentC = new UserAgent();
-		User user = (User) session.getAttribute("user");
+		int accountID = Integer.valueOf(request.getParameter("accountID"));
+		Customer c = (Customer) session.getAttribute("customer");
 		
-		int customerID = Integer.valueOf(request.getParameter("customerID")); 
-		agentC.getCustomer(customerID, session);
-		int accountID  = Integer.valueOf(request.getParameter("accountID"));
-		session.setAttribute("accountID", accountID);
-		session.setAttribute("accounts", agentA.getAccounts(customerID));
-		session.setAttribute("trans", agentA.getTransactions(accountID, user.getRole()));
-		agentC.getCustomer(customerID, session);
+		int customerID = c.getUserID();
 		
-		request.getRequestDispatcher("CustomerAccountDetails.jsp").forward(request, response);
+		AccountAgent agent = new AccountAgent();
+		agent.freezeAccount(accountID);
+		String URL = "CustomerAccountDetails?customer=" + customerID 
+				+ "&accountID=" + accountID;
+		request.getRequestDispatcher(URL).forward(request, response);
 	}
 
 }

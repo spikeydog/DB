@@ -1,27 +1,29 @@
 package bank.controller;
 
 import java.io.IOException;
+import java.sql.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import bank.util.UserAgent;
+import bank.bean.Account;
+import bank.bean.Terms;
+import bank.util.AccountAgent;
 
 /**
- * Servlet implementation class ViewProfile
+ * Servlet implementation class UpdateTerms
  */
-@WebServlet("/ViewProfile")
-public class ViewProfile extends HttpServlet {
+@WebServlet("/UpdateTerms")
+public class UpdateTerms extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ViewProfile() {
+    public UpdateTerms() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -37,10 +39,20 @@ public class ViewProfile extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		UserAgent agent = new UserAgent();
-		agent.getCustomerProfile(session);
-		request.getRequestDispatcher("ViewProfile.jsp").forward(request, response);
+		int accountID = Integer.valueOf(request.getParameter("accountID"));
+		AccountAgent agent = new AccountAgent();
+		Account account = agent.getAccount(accountID);
+		Terms terms = agent.getTerms(account);
+			
+		if (null == terms) {
+			terms = new Terms();
+			terms.setAccountNumber(accountID);
+		}
+			
+		request.getSession().setAttribute("terms", terms);
+			
+		String URL = "SetTerms.jsp?accountID=" + accountID;
+		request.getRequestDispatcher(URL).forward(request, response);
 	}
 
 }

@@ -7,21 +7,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import bank.util.UserAgent;
+import bank.util.AccountAgent;
 
 /**
- * Servlet implementation class ViewProfile
+ * Servlet implementation class ReverseTx
  */
-@WebServlet("/ViewProfile")
-public class ViewProfile extends HttpServlet {
+@WebServlet("/ReverseTx")
+public class ReverseTx extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ViewProfile() {
+    public ReverseTx() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,11 +35,16 @@ public class ViewProfile extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		UserAgent agent = new UserAgent();
-		agent.getCustomerProfile(session);
-		request.getRequestDispatcher("ViewProfile.jsp").forward(request, response);
+	protected void doPost(HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException {
+		int txid = Integer.valueOf(request.getParameter("txid"));
+		int customerID = Integer.valueOf((String) request.getParameter("customerID"));
+		int accountID = Integer.valueOf((String) request.getParameter("accountID"));
+		AccountAgent agent = new AccountAgent();
+		agent.reverseTx(txid);
+		String URL = "CustomerAccountDetails?customerID=" + customerID
+				+ "&accountID=" + accountID;
+		request.getRequestDispatcher(URL).forward(request, response);
 	}
 
 }

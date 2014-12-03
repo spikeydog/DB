@@ -1,10 +1,7 @@
 package bank.controller;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.sql.Timestamp;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,23 +9,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import bank.bean.Account;
-import bank.bean.Terms;
 import bank.bean.User;
-import bank.util.AccountAgent;
-import bank.util.AccountType;
+import bank.util.Role;
+import bank.util.UserAgent;
 
 /**
- * Servlet implementation class RequestNewAccount
+ * Servlet implementation class ChangePassword
  */
-@WebServlet(name="RequestNewAccount", urlPatterns="/RequestNewAccount")
-public class RequestNewAccount extends HttpServlet {
+@WebServlet("/ChangePassword")
+public class ChangePassword extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public RequestNewAccount() {
+    public ChangePassword() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -47,22 +42,23 @@ public class RequestNewAccount extends HttpServlet {
 	protected void doPost(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		RequestDispatcher dispatcher = null;
 		User user = (User) session.getAttribute("user");
-		AccountAgent agent = new AccountAgent();
+		String password = (String) request.getParameter("password1");
+		UserAgent agent = new UserAgent();
+		String URL = null;
 		
-		if (null != user) {
-			Account account = new Account();
-			account.setUserID(user.getUserID());
-			account.setType(AccountType.getType(request.getParameter("type")));
-			account.setDescription(request.getParameter("description"));
-			account.setFrozen(true);
-			account.setDateCreated(new Timestamp(System.currentTimeMillis()));
-			account.setBalance(Double.valueOf(request.getParameter("balance")));			
-			agent.requestAccount(account);
-			agent.getAccounts(user.getUserID());
+		if (null != user && null != password) {
+			agent.changePassword(user);			
 		}
-		dispatcher = request.getRequestDispatcher("CustomerHome");
-		dispatcher.forward(request, response);
+		if (Role.BANKER == user.getRole()) {
+			URL = "BankerHome";
+			
+		} else if (Role.CUSTOMER == user.getRole()) {
+			URL = "UpdateProfile";
+		}
+		
+		session.setAttribute("message", "Password changed successfully");
+		request.getRequestDispatcher(URL).forward(request, response);
 	}
+
 }

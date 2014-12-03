@@ -95,12 +95,13 @@ public abstract class AbstractDatabaseClass {
 	}
 */	
 	protected PreparedStatement getPreparedStatement(String query) {
+		if (null==query) {throw new RuntimeException("Null query");}
 		PreparedStatement statement = null;
 		
 		try {
+			if (null==connection) {throw new RuntimeException("WTF");}
 			statement = connection.prepareStatement(query);
 		} catch (SQLException ex) {
-			System.out.println("Could not prepare a statement");
 			ex.printStackTrace();
 		}
 		// DEBUG

@@ -10,6 +10,13 @@
 		width:65;
 	}
 </style>
+<script>
+	function setTXID(txid) {
+		var input = document.getElementById('txxid');
+		input.value = txid;
+		document.forms['reverse'].submit();
+	}
+</script>
 </head>
 <body>
 <%@ page import="java.sql.Timestamp, 
@@ -20,11 +27,11 @@
 				bank.bean.OwnedAccount, 
 				bank.bean.Transaction,
 				bank.bean.User" %>
-</body>
 <header>
 	<jsp:include page="BankerHeader.jsp"/>
 	<% 
 		Customer customer = (Customer) session.getAttribute("customer");
+		Integer account = (Integer) session.getAttribute("accountID");
 		List<OwnedAccount> accounts = (List<OwnedAccount>) session.getAttribute("accounts");
 		List<Transaction> trans = (List<Transaction>) session.getAttribute("trans");
 	%>
@@ -76,8 +83,12 @@
 				<label><%= customer.getRiskRating() %></label>
 			</td>
 			<td>
-				<form>
-					<input name="risk" type="text" size="5">
+				<form action="SetRisk" method="post">
+					<input name="customerID" type="hidden" 
+					value="<%= customer.getUserID() %>"/>
+					<input name="accountID" type="hidden" 
+					value="<%= (account!=null)? account : 0 %>"/>
+					<input name="risk" type="text" size="5"/>
 					<input id="udpate" name="update" 
 					value="Update Risk Rating" type="submit"/>
 				</form>
@@ -176,31 +187,46 @@
 			<label>Frozen</label>
 		</td>
 	</tr>
+	<form method="post" action="FreezeAccount">
+	<input type="hidden" name="customerID" value="<%= customer.getUserID()%>"/>
+	<input id="freezer" type="hidden" name="accountID" value="<%= account %>"/>
 	<%
 		StringBuilder scribe = new StringBuilder();
-		for (Account account : accounts) {
+		for (Account each : accounts) {
+			int num = each.getAccountNumber();
 			scribe.append("<tr>").
-			append("<td><a href=\"Transactions?accountID=").
-			append(account.getAccountNumber()).append("\">").
-			append(account.getAccountNumber()).append("</a></td>").
-			append("<td>").append(account.getType().string).append("</td>").
-			append("<td>").append(account.getBalance()).append("</td>").
-			append("<td>").append(account.isFrozen()).append("</td>");
+			append("<td><a href=\"CustomerByAccount?accountID=").
+			append(each.getAccountNumber()).append("\">").
+			append(each.getAccountNumber()).append("</a></td>").
+			append("<td>").append(each.getType().string).append("</td>").
+			append("<td>").append(each.getBalance()).append("</td>").
+			append("<td>").append(each.isFrozen()? "yes" 
+				: "<input type=\"submit\" "
+				+ " onclick=\"document.getElementById('freezer').value=" 
+				+ num + "\" value=\"Freeze Account\" />").append("</td>").
+			append("<td><a href=\"UpdateTerms?accountID=" + num + "\">Set Terms</a></td>");
 			scribe.append("</tr>");
 		}
 		out.write(scribe.toString());
 	%>
-</td>
-</tr>
+	</form>
 </table>
 </td>
 </tr>
 </table>
 <br>
 <H3>Account Transactions</H3>
+<form id="reverse" action="ReverseTx" method="post">
+	<input type="hidden" name="customerID" value="<%= customer.getUserID()%>"/>
+	<input type="hidden" name="accountID" value="<%= account %>"/>
+	<input type="hidden" id="txxid" name="txid" />
+	
 <table width="100%" frame="box">
 			<tr>
 				<td width="15%">
+					Time
+				</td>
+				<td width="8%">
 					Trans ID
 				</td>
 				<td width="15%">
@@ -216,27 +242,37 @@
 					Reverse
 				</td>
 			</tr>
+	
 	<%
 		scribe = new StringBuilder();
 		if (null!= trans && trans.size() > 0) {
 			for (Transaction tx : trans) {
+				scribe = new StringBuilder();
 				scribe.append("<tr>");
+				scribe.append("<td>").append(tx.getDate()).append("</td>");
 				scribe.append("<td>").append(tx.getTransID()).append("</td>");
 				scribe.append("<td>").append(tx.getAccountNumber()).append("</td>");
+				
+				
 				scribe.append("<td>").append(tx.getIssuer()).append("</td>");
 				scribe.append("<td>").append(tx.getAmount()).append("</td>");
 				
 				if (!tx.isReversed()) {
-					scribe.append("<td><input type=\"checkbox\" name=\"reversedTxID\"" 
-							+ "onclick=\"submit()\"/></td>");
+					scribe.append("<td><input type=\"checkbox\" "
+							+ "onclick=\"setTXID(" + tx.getTransID() + ")\" "
+							+ " /></td>");
 				}
 				scribe.append("</tr>");
 				out.write(scribe.toString());					
 			}
+		} else if (null == account) {
+			out.write("Select an account to view transactions");
 		} else {
-			out.write("<tr><td>No account selected. Select an account to view transactions</td></tr>");
+			out.write("This account has no transactions");
 		}
 	%>
+	
 </table>
-
+</form>
+</body>
 </html>

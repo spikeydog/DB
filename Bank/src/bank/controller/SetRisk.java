@@ -7,21 +7,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import bank.bean.Customer;
 import bank.util.UserAgent;
 
 /**
- * Servlet implementation class ViewProfile
+ * Servlet implementation class SetRisk
  */
-@WebServlet("/ViewProfile")
-public class ViewProfile extends HttpServlet {
+@WebServlet("/SetRisk")
+public class SetRisk extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ViewProfile() {
+    public SetRisk() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -37,10 +37,17 @@ public class ViewProfile extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
+		String risk = (String) request.getParameter("risk");
+		int customerID = Integer.valueOf(request.getParameter("customerID"));
 		UserAgent agent = new UserAgent();
-		agent.getCustomerProfile(session);
-		request.getRequestDispatcher("ViewProfile.jsp").forward(request, response);
+		
+		if (null != risk) {
+			System.out.println("Setting risk to: " + risk);
+			agent.setRisk(risk, customerID);
+			agent.getCustomer(customerID, request.getSession());
+		}
+		String URL = "CustomerAccountDetails?customerID=" + customerID;
+		request.getRequestDispatcher(URL).forward(request, response);
 	}
 
 }

@@ -51,7 +51,6 @@ public class BankerHome extends HttpServlet {
 		String URL = null;
 		
 		if (null != banker && Role.BANKER == banker.getRole()) {
-			System.out.println("Banker: " + banker.getUserID());
 			List<OwnedAccount> accounts = agent.getFrozenAccounts(banker);
 			List<Transaction> trans = agent.getFraudulentTransactions(banker);
 			session.removeAttribute("accounts");

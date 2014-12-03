@@ -38,7 +38,7 @@
 	<jsp:include page="CustomerHeader.jsp"/>
 	<H2>Update Profile</H2>
 </header>
-<form name="updateForm" action="UpdateProfile" submit="validate()">
+<form method="post" name="updateForm" action="UpdateProfile" submit="validate()">
 	<fieldset><legend>Change Password</legend>
 	<table>
 		<tr>

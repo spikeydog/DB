@@ -41,15 +41,10 @@ public class UserAgent extends AbstractDatabaseClass {
 		this.query = "CALL auth_customer(?,?)";
 				
 		super.connect();
-		//results = super.executeQuery(query);
-		// Attempt to get data from the results set
+		
 		try {
 			//statement = getPreparedCall(query);
 			statement = getPreparedStatement(query);
-			if (null == statement) {
-				System.out.println("call is null");
-			}
-			
 			statement.setString(1, customer.getUsername());
 			statement.setString(2, customer.getPassword());
 			results = executeQuery(statement);
@@ -95,7 +90,6 @@ public class UserAgent extends AbstractDatabaseClass {
 		} catch (SQLException ex) {
 			
 		}
-		System.out.println(customer.toString());
 		session.setAttribute("customer", customer);
 	}
 	
@@ -132,7 +126,6 @@ public class UserAgent extends AbstractDatabaseClass {
 		} catch (SQLException ex) {
 			
 		}
-		System.out.println(customer.toString());
 		session.setAttribute("customer", customer);
 	}
 	
@@ -241,7 +234,7 @@ public class UserAgent extends AbstractDatabaseClass {
 			statement.setString(i++, c.getTelephone());
 			
 			results = statement.executeQuery();
-			System.out.println(results.toString());
+		
 			if (results.next()) {
 				code = Code.getCode(results.getInt("code"));
 			}
@@ -273,7 +266,7 @@ public class UserAgent extends AbstractDatabaseClass {
 			statement.setInt(i++, b.getEmployeeID());
 			
 			results = statement.executeQuery();
-			System.out.println(results.toString());
+			
 			if (results.next()) {
 				code = Code.getCode(results.getInt("code"));
 			}
@@ -284,5 +277,39 @@ public class UserAgent extends AbstractDatabaseClass {
 		}
 		
 		return code;
+	}
+	
+	public void setRisk(String risk, int customerID) {
+		query = "UPDATE customers SET cus_risk=? WHERE user_id=?";
+		super.connect();
+
+		// Attempt to get data from the results set
+		try {
+			statement = getPreparedStatement(query);
+			statement.setString(1, risk);
+			statement.setInt(2, customerID);
+			statement.execute();
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+	}
+	
+	public void changePassword(User user) {
+		query = "UPDATE user SET user_password=? WHERE user_id=?";
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setString(1, user.getPassword());
+			statement.setInt(2, user.getUserID());
+			statement.execute();
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
 	}
 }

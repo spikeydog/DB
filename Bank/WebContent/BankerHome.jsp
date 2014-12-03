@@ -57,13 +57,14 @@
 	 } else {
 		 out.write(accounts.size() + " accounts require your attention<br>");
 		 for (OwnedAccount account : accounts) {
+			 scribe = new StringBuilder();
 			 int num = account.getAccountNumber();
 			 User customer = account.getUser();
 			 scribe.append("<tr>");
 			 scribe.append("<td><a href=\"CustomerByAccount?accountID=").append(num).append("\">");
 			 scribe.append(num).append("</a></td>");
 			 scribe.append("<td><a href=\"CustomerAccountDetails?customerID=").
-			 append(customer.getUserID()).append("&accountID=\"").append(num).append("\">").
+			 append(customer.getUserID()).append("&accountID=").append(num).append("\">").
 			 append(customer.getLastName()).append(", ").append(customer.getFirstName()).
 			 append("</a></td>").append("<td>").append(account.getType()).append("</td>");
 			 scribe.append("<td>").append(account.getBalance()).append("</td>");
@@ -92,25 +93,18 @@
 				<td width="15%">
 					Amount
 				</td>
-				<td width="15%">
-					Reverse
-				</td>
 			</tr>
 	<%
 		scribe = new StringBuilder();
 		if (null!= trans && trans.size() > 0) {
 			for (Transaction tx : trans) {
+				scribe = new StringBuilder();
 				scribe.append("<tr>");
 				scribe.append("<td>").append(tx.getTransID()).append("</td>");
 				scribe.append("<td><a href=\"CustomerByAccount?accountID=").append(tx.getAccountNumber());
 				scribe.append("\">").append(tx.getAccountNumber()).append("</a></td>");
 				scribe.append("<td>").append(tx.getIssuer()).append("</td>");
 				scribe.append("<td>").append(tx.getAmount()).append("</td>");
-				
-				if (!tx.isReversed()) {
-					scribe.append("<td><input type=\"checkbox\" name=\"reversedTxID\"" 
-							+ "onclick=\"submit()\"/></td>");
-				}
 				scribe.append("</tr>");
 				out.write(scribe.toString());					
 			}

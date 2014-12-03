@@ -59,13 +59,14 @@ public class AccountAgent extends AbstractDatabaseClass {
 	public Terms getTerms(Account account) {
 		Terms terms = null;
 		int accountNumber = account.getAccountNumber();
-		query = "SELECT * FROM terms WHERE account_number=?";
+		query = "SELECT * FROM terms WHERE account_number=?"
+				+ "ORDER BY terms_id DESC LIMIT 1";
 		super.connect();
 		try {
 			statement = getPreparedStatement(query);
 			statement.setInt(1, accountNumber);
 			results = statement.executeQuery();
-			while (results.next()) {
+			if (results.next()) {
 				terms = new Terms();
 				terms.setAccountNumber(results.getInt("account_number"));
 				terms.setTermsID(results.getInt("terms_id"));
@@ -107,6 +108,34 @@ public class AccountAgent extends AbstractDatabaseClass {
 		}
 	}
 	
+	public Account getAccount(int accountID) {
+		query = "SELECT * FROM general_accounts WHERE account_number=?";
+		Account account = new Account();
+		
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, accountID);
+			results = statement.executeQuery();
+			if (null != results && results.next()) {
+				account.setAccountNumber(results.getInt("account_number"));
+				account.setUserID(results.getInt("user_id"));
+				account.setType(AccountType.getType(results.getString("account_type")));
+				account.setDescription(results.getString("account_descrip"));
+				account.setBalance(results.getDouble("balance"));
+				account.setDateCreated(results.getTimestamp("date_created"));
+				account.setFrozen(results.getBoolean("frozen"));
+			}
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+		
+		return account;
+	}
+	
 	public List<Transaction> getTransactions(int accountNumber, Role role) {
 		List<Transaction> trans = new LinkedList<Transaction>();
 		Transaction tx = null;
@@ -139,7 +168,7 @@ public class AccountAgent extends AbstractDatabaseClass {
 		} finally {
 			super.disconnect();
 		}
-		System.out.println(trans.size() + " tx obtained");
+	
 		return trans;
 	}
 	
@@ -222,7 +251,6 @@ public class AccountAgent extends AbstractDatabaseClass {
 					accounts.add(account);
 				}
 			}
-			System.out.println("Size of accounts list: " + accounts.size());
 			
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -293,5 +321,55 @@ public class AccountAgent extends AbstractDatabaseClass {
 		}
 		
 		return customerID;
+	}
+	
+	public void reverseTx(int txid) {
+		query = "CALL reverse_tx(?)";
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, txid);
+			statement.execute();
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+	}
+	
+	public void freezeAccount(int accountID) {
+		query = "UPDATE general_accounts SET frozen=TRUE WHERE account_number=?";
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, accountID);
+			statement.execute();
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
+	}
+	
+	public void setTerms(Terms terms) {
+		query = "INSERT INTO terms VALUES(DEFAULT,?,?,?,?,?,?)";
+		super.connect();
+		try {
+			statement = getPreparedStatement(query);
+			statement.setInt(1, terms.getAccountNumber());
+			statement.setDouble(2, terms.getMinBalance());
+			statement.setDouble(3, terms.getMaxBalance());
+			statement.setDouble(4, terms.getInterestRate());
+			statement.setDate(5, terms.getPeriod());
+			statement.setFloat(6, terms.getFees());
+			statement.execute();
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			super.disconnect();
+		}
 	}
 }
